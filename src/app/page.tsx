@@ -40,8 +40,9 @@ export default function WeddingPage() {
       return;
     }
 
-    // Buka kunci saat animasi masuk
-    document.body.style.overflow = "auto";
+    // ✨ TETAP DIKUNCI! Saat undangan dibuka, kita masuk ke "Slide Presentation Mode"
+    // Layar tidak bisa di-scroll bebas, melainkan kita lacak rodanya (wheel/swipe)
+    document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
 
     // ✨ Cegah TS Error: Pastikan elemen sudah ada di DOM sebelum menjalankan GSAP
@@ -49,250 +50,162 @@ export default function WeddingPage() {
 
     const ctx = gsap.context(() => {
       
-      // MASTER TIMELINE
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: visualRoomsRef.current,
-          start: "top top",
-          end: "+=7500", // ✨ DIPERPANJANG DRASTIS: Untuk ngakomodasi manuver kamera "Zoom Ekstrem" sebelum awan putih
-          pin: true,     // Tahan layar
-          scrub: 1.5,    // ✨ SMOOTHING: Diperbesar jadi 1.5 agar pergerakan semua aset lebih buttery/lembut
-          anticipatePin: 1,
-        }
-      });
+      // ✨ NEW MASTER TIMELINE: Tanpa ScrollTrigger! Dijalankan manual lewat swipe/scroll
+      const tl = gsap.timeline({ paused: true });
 
-      // Menambahkan label agar animasi transisi scene terjadi bebarengan
-      tl.addLabel("sceneTransition");
+      tl.addLabel("step0");
 
-      // ALUR 1: BUANG WALL KE ATAS (MINGGAT!)
-      tl.to(".wall-scene", {
-        y: "-120%", 
-        opacity: 0,
-        scale: 0.6,          // Efek mengecil (zoom out)
-        filter: "blur(15px)", // Efek blur
-        ease: "power2.in",
-        duration: 1
-      }, "sceneTransition");
-
-      // PARALLAX BACKGROUND BERHENTI (Hanya gerak pas pindah scene)
-      tl.fromTo(".wall-bg-texture", 
-        { scale: 2, y: "0%" }, // Titik awal: Background di-zoom 2x saat Countdown
-        {
-          scale: 1.5, // Titik akhir: Zoom berkurang perlahan jadi 1.5x
-          y: "-30%",  // Tembok geser ke atas sedikit lalu statis
-          ease: "power2.inOut",
-          duration: 1
-        }, "sceneTransition"
-      );
-
-      // VIGNETTE FADE JUGA IKUT BERHENTI
-      tl.to(".wall-bg-vignette", {
-        opacity: 0.5, // Tembok agak gelap pas meja muncul
-        ease: "power2.inOut",
-        duration: 1
-      }, "sceneTransition");
-
-      // ALUR 2a: MEJA MASUK (Super Zoom, Blur & Slide dari pojok kiri bawah)
-      tl.fromTo(".single-table-bg", 
-        { scale: 3, filter: "blur(20px)", opacity: 0, x: "-30vw", y: "20vh", transformOrigin: "left bottom" },
-        { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.8 },
-        "-=0.5" // Mulai barengan saat tembok ke atas
-      );
-
-      // Pastikan wrapper item meja mulai terlihat (isinya akan dianimasikan satu-satu)
-      tl.fromTo(".table-items-wrapper",
-        { opacity: 0 },
-        { opacity: 1, duration: 0.1 },
-        "<" // Tepat saat meja mulai
-      );
-
-      // ALUR 2b: BUNGA MEJA MENYUSUL
-      // Diubah x menjadi positif (40vw) agar datang dari kanan, searah dengan tarikan meja
-      tl.fromTo(".bunga-meja-item",
-        { scale: 2, filter: "blur(15px)", opacity: 0, x: "40vw", y: "15vh" },
-        { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 },
-        "-=1.4" // Makin cepat overlap-nya biar ngikutin momentum meja
-      );
-
-      // ALUR 2c: FOTO MEMPELAI PUTRA TERAKHIR MASUK
-      // Diubah x menjadi positif (25vw) agar searah dengan tarikan meja
-      tl.fromTo(".groom-photo-item",
-        { scale: 1.5, filter: "blur(15px)", opacity: 0, x: "25vw", y: "10vh", rotateY: 15 },
-        { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, rotateY: 0, ease: "power3.out", duration: 1.5 },
-        "-=1.2" // Disusul bingkai dengan efek lensa fokus
-      );
-
-      // ALUR 2d: TEKS INFO MEMPELAI PUTRA
-      // Teks dari pojok kiri atas masuk dengan efek blur menyusul bingkai
-      tl.fromTo(".groom-info-item",
-        { opacity: 0, x: "-10vw", filter: "blur(10px)" },
-        { opacity: 1, x: 0, filter: "blur(0px)", ease: "power3.out", duration: 1.5 },
-        "-=1.0" // Teks muncul tak lama setelah bingkai fotonya mulai terlihat
-      );
-
-      // ALUR 3: GESER MEJA HORIZONTAL
-      tl.to(".table-items-wrapper", {
-        xPercent: -50, // Diubah jadi -50 karena sekarang mejanya dipotong cuma jadi 2 layar
-        ease: "none",
-        duration: 3    // ✨ DIPERCEPAT LAGI
-      });
-
-      // Geser background meja bebarengan dengan barang di atas meja (simbol "<")
-      tl.to(".single-table-bg", {
-        xPercent: -105, // ✨ NILAI TENGAH: Biar parallax-nya pas, gak kelebihan & gak kepotong!
-        ease: "none",
-        duration: 3    // Harus sama dengan yang di atas
-      }, "<");
-
-      // ALUR 4: EXIT SCENE (Semua di atas meja mengecil, slide ke kanan bawah, blur & fade)
-      tl.addLabel("tableExit");
+      // STEP 1: WALL MINGGAT & GROOM (Pria) MASUK
+      tl.to(".wall-scene", { y: "-120%", opacity: 0, scale: 0.6, filter: "blur(15px)", ease: "power2.inOut", duration: 1.2 }, "step0+=0.1");
+      tl.to(".wall-bg-texture", { scale: 1.5, y: "-30%", ease: "power2.inOut", duration: 1.2 }, "<");
+      tl.to(".wall-bg-vignette", { opacity: 0.5, ease: "power2.inOut", duration: 1.2 }, "<");
       
-      // 1. Animasi bungkus barang (Keluar ke Kiri Atas)
-      tl.to(".table-items-wrapper", {
-        scale: 0.5,
-        x: "-30vw",
-        y: "-30vh",
-        opacity: 0,
-        filter: "blur(20px)",
-        transformOrigin: "75% center", // Fokus sinkron
-        ease: "power2.inOut",
-        duration: 1
-      }, "tableExit");
+      tl.fromTo(".single-table-bg", { scale: 3, filter: "blur(20px)", opacity: 0, x: "-30vw", y: "20vh", transformOrigin: "left bottom" }, { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 }, "-=0.8");
+      tl.fromTo(".table-items-wrapper", { opacity: 0 }, { opacity: 1, duration: 0.1 }, "<");
+      tl.fromTo(".bunga-meja-item", { scale: 2, filter: "blur(15px)", opacity: 0, x: "40vw", y: "15vh" }, { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 }, "-=1.2");
+      tl.fromTo(".groom-photo-item", { scale: 1.5, filter: "blur(15px)", opacity: 0, x: "25vw", y: "10vh", rotateY: 15 }, { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, rotateY: 0, ease: "power3.out", duration: 1.5 }, "-=1.0");
+      tl.fromTo(".groom-info-item", { opacity: 0, x: "-10vw", filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", ease: "power3.out", duration: 1.5 }, "-=1.0");
 
-      // 2. Animasi background meja (Keluar ke Kiri Atas)
-      tl.to(".single-table-bg", {
-        scale: 0.5,
-        x: "-30vw",
-        y: "-30vh",
-        opacity: 0,
-        filter: "blur(20px)",
-        transformOrigin: "95% center", // Koordinat absolut diimbangi dengan geseran -45%
-        ease: "power2.inOut",
-        duration: 1
-      }, "tableExit");
+      tl.addLabel("step1");
 
-      // ALUR 5: EVENT BOOK MASUK
-      // ✨ DIPERCEPAT: Hanya telat 0.2 detik dari dimulainya animasi meja keluar
-      tl.addLabel("eventEnter", "tableExit+=0.2"); 
+      // STEP 2: BRIDE (Wanita) MASUK (Meja Geser Kiri)
+      tl.to(".table-items-wrapper", { xPercent: -50, ease: "power2.inOut", duration: 1.5 }, "step1+=0.1");
+      tl.to(".single-table-bg", { xPercent: -105, ease: "power2.inOut", duration: 1.5 }, "<");
 
-      // Munculkan container event-scene
-      tl.to(".event-scene", { opacity: 1, duration: 0.1 }, "eventEnter");
+      tl.addLabel("step2");
 
-      // ✨ ZOOM OUT BACKGROUND: Efek kamera menjauh (dari 1.5x ke 1x)
-      tl.to(".wall-bg-texture", {
-        scale: 1,
-        ease: "power2.inOut",
-        duration: 1.5
-      }, "eventEnter");
-
-      // ✨ TANPA OPACITY: Hanya main Blur, Zoom (Scale), dan Sliding!
+      // STEP 3: EVENT BOOK MASUK
+      tl.to(".table-items-wrapper", { scale: 0.5, x: "-30vw", y: "-30vh", opacity: 0, filter: "blur(20px)", transformOrigin: "75% center", ease: "power2.inOut", duration: 1 }, "step2+=0.1");
+      tl.to(".single-table-bg", { scale: 0.5, x: "-30vw", y: "-30vh", opacity: 0, filter: "blur(20px)", transformOrigin: "95% center", ease: "power2.inOut", duration: 1 }, "<");
       
-      // 1. Lantai (Khusus Lantai kembali slide dari Bawah ke Atas)
-      tl.fromTo(".event-lantai",
-        { y: "50vh", scale: 1.5, filter: "blur(20px)" },
-        { y: 0, scale: 1, filter: "blur(0px)", ease: "power2.out", duration: 1.5 },
-        "eventEnter"
-      );
+      tl.to(".event-scene", { opacity: 1, duration: 0.1 }, "-=0.5");
+      tl.to(".wall-bg-texture", { scale: 1, ease: "power2.inOut", duration: 1.5 }, "<");
+      
+      tl.fromTo(".event-lantai", { y: "50vh", scale: 1.5, filter: "blur(20px)" }, { y: 0, scale: 1, filter: "blur(0px)", ease: "power2.out", duration: 1.5 }, "<");
+      tl.fromTo(".event-papan", { x: "60vw", y: "40vh", scale: 1.8, filter: "blur(20px)", transformOrigin: "center 25%" }, { x: 0, y: 0, scale: 1, filter: "blur(0px)", transformOrigin: "center 25%", ease: "power3.out", duration: 1.5 }, "-=1.0");
+      tl.fromTo(".event-bunga-berdiri", { x: "70vw", y: "50vh", scale: 1.6, filter: "blur(20px)" }, { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 }, "-=1.2");
+      tl.fromTo(".event-bunga-lantai", { x: "80vw", y: "60vh", scale: 1.7, filter: "blur(20px)" }, { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 }, "-=1.2");
 
-      // 2. Papan (Slide dari Pojok Kanan Bawah)
-      tl.fromTo(".event-papan",
-        // ✨ transformOrigin: "center 25%" memastikan papan mengunci titik atasnya, lalu mengembang/ngezoom ke arah bawah
-        { x: "60vw", y: "40vh", scale: 1.8, filter: "blur(20px)", transformOrigin: "center 25%" },
-        { x: 0, y: 0, scale: 1, filter: "blur(0px)", transformOrigin: "center 25%", ease: "power3.out", duration: 1.5 },
-        "eventEnter+=0.2" // Masuk 0.2 detik setelah lantai
-      );
+      tl.addLabel("step3");
 
-      // 3. Bunga Berdiri (Slide dari Pojok Kanan Bawah)
-      tl.fromTo(".event-bunga-berdiri",
-        { x: "70vw", y: "50vh", scale: 1.6, filter: "blur(20px)" },
-        { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 },
-        "eventEnter+=0.3" // Menyusul papan
-      );
+      // STEP 4: EVENT BOOK ZOOM (Reading Mode)
+      tl.to(".wall-bg-texture", { scale: 1.2, ease: "power2.inOut", duration: 1.5 }, "step3+=0.1");
+      tl.to(".event-bunga-berdiri", { scale: 2, x: "-25vw", y: "10vh", filter: "blur(5px)", ease: "power2.inOut", duration: 1.5 }, "<");
+      tl.to([".event-bunga-lantai", ".event-lantai"], { scale: 1.5, y: "30vh", opacity: 0, ease: "power2.inOut", duration: 1.5 }, "<");
+      tl.to(".event-papan", { scale: 1.8, ease: "power2.inOut", duration: 1.5 }, "<");
 
-      // 4. Bunga Lantai (Slide dari Pojok Kanan Bawah)
-      tl.fromTo(".event-bunga-lantai",
-        { x: "80vw", y: "60vh", scale: 1.7, filter: "blur(20px)" },
-        { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 },
-        "eventEnter+=0.4" // Masuk paling akhir
-      );
+      tl.addLabel("step4");
 
-      // Beri jeda sejenak untuk memandangi komposisi utuh
-      tl.to({}, { duration: 0.3 }); 
-
-      // ✨ ALUR 5b: ZOOM IN EKSTREM (READING MODE)
-      tl.addLabel("eventZoom");
-
-      // 1. Tembok (Zoom lambat untuk efek parallax kedalaman)
-      tl.to(".wall-bg-texture", { scale: 1.2, ease: "power2.inOut", duration: 2.5 }, "eventZoom");
-
-      // 2. Bunga Berdiri (Zoom, Geser menjauh ke kiri, Ngeblur tipis-tipis)
-      tl.to(".event-bunga-berdiri", {
-        scale: 2, x: "-25vw", y: "10vh", filter: "blur(5px)",
-        ease: "power2.inOut", duration: 2.5
-      }, "eventZoom");
-
-      // 3. Bunga Lantai & Lantai (Zoom, Turun merosot ke bawah, Perlahan Menghilang)
-      tl.to([".event-bunga-lantai", ".event-lantai"], {
-        scale: 1.5, y: "30vh", opacity: 0,
-        ease: "power2.inOut", duration: 2.5
-      }, "eventZoom");
-
-      // 4. Papan (Zoom ekstrem 2.8x! Karena origin di "center 25%", ia akan mekar ke bawah layarnya)
-      tl.to(".event-papan", {
-        scale: 1.8, // ✨ DIKURANGI: Agar final zoom tidak terlalu dekat/nempel ke layar
-        // y: "-10vh", // (Opsional) Uncomment ini jika teks dirasa kurang naik
-        ease: "power2.inOut", 
-        duration: 2.5
-      }, "eventZoom");
-
-      // Jeda scroll panjang biar tamu bisa dengan santai membaca teks yang udah super jumbo
-      // dan menekan tombol Google Maps sebelum tertutup awan putih
-      tl.to({}, { duration: 0.3 }); // ✨ DIPERSINGKAT: Jeda sebelum masuk ke awan putih tidak lagi terlalu lama
-
-      // ALUR 6: FADE BERAWAN (WHITEOUT & BLUR) Menuju Layout Normal
-      tl.addLabel("cloudyFade");
-
-      // Overlay putih akan menebal menutupi layar
-      tl.to(".white-cloud-overlay", {
-        opacity: 1,
-        ease: "power2.inOut",
-        duration: 0.8 // ✨ DIPERCEPAT: Awan menutupi layar dengan lebih gesit
-      }, "cloudyFade");
-
-      // ✨ HILANGKAN REDUP HITAM: Fade out efek vignette di tembok
-      tl.to(".wall-bg-vignette", {
-        opacity: 0,
-        duration: 0.8 // ✨ DIPERCEPAT
-      }, "cloudyFade");
-
-      // Background dkk meneruskan zoom-nya (+=0.2) sambil menghilang dibalik awan
-      tl.to([".event-scene", ".wall-bg-texture"], {
-        filter: "blur(30px)", 
-        scale: "+=0.2", // ✨ Diubah jadi +=0.2 agar meneruskan zoom terakhir secara dinamis
-        opacity: 0,
-        duration: 0.8 // ✨ DIPERCEPAT
-      }, "cloudyFade");
-
-      // ✨ FADE OUT TOTAL: Menyembunyikan seluruh scene setelah awan putih, agar layer di bawahnya (Gallery dkk) terekspos buat di-klik!
+      // STEP 5: FADE BERAWAN & MUNCUL GALLERY (Scroll Normal Dibuka)
+      tl.to(".white-cloud-overlay", { opacity: 1, ease: "power2.inOut", duration: 1 }, "step4+=0.1");
+      tl.to(".wall-bg-vignette", { opacity: 0, duration: 1 }, "<");
+      tl.to([".event-scene", ".wall-bg-texture"], { filter: "blur(30px)", scale: "+=0.2", opacity: 0, duration: 1 }, "<");
       tl.to(".visual-rooms-content", { autoAlpha: 0, duration: 0.1 });
 
-      // ✨ ALUR 7 DIHAPUS SEPENUHNYA!
-      // Transisi diserahkan ke natural scroll yang warnanya sama-sama putih.
-      // Tidak akan ada lagi white space nyangkut atau glitch scrollbar!
+      tl.addLabel("step5");
 
-      // ✨ SINKRONISASI GSAP CHILDS: Ini WAJIB!
-      // Karena MobileJourney (Child) merender lebih dulu, kita paksa GSAP menyortir ulang
-      // posisinya setelah Parent membuat pin (padding 7500px).
-      ScrollTrigger.sort();
-      ScrollTrigger.refresh();
 
-      // Jaga-jaga: Refresh sekali lagi setelah animasi Cover hilang total dan gambar termuat
-      setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 1500);
+      // ✨ LOGIC CONTROLLER WHEEL / TOUCH (SWIPE)
+      let currentStep = 0;
+      const maxStep = 5;
+      let isAnimating = false;
+      let touchStartY = 0;
+
+      const changeStep = (direction: "next" | "prev") => {
+        if (isAnimating) return;
+
+        if (direction === "next" && currentStep < maxStep) {
+          currentStep++;
+          isAnimating = true;
+
+          // Sembunyikan indikator scroll di bawah layar setelah 1 tarikan
+          if (currentStep === 1) gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5 });
+
+          tl.tweenTo(`step${currentStep}`, {
+            ease: "power2.inOut",
+            onComplete: () => {
+              isAnimating = false;
+              if (currentStep === maxStep) {
+                // ✨ BEBASKAN SCROLL KETIKA MENTOK DI GALLERY!
+                document.body.style.overflow = "auto";
+                ScrollTrigger.refresh(); // Refresh biar parallax normal terdeteksi ulang
+              }
+            }
+          });
+        } 
+        else if (direction === "prev") {
+          // KONDISI KHUSUS: User lagi asik scroll di Gallery/Story, lalu mentok ke atas (scrollY 0) dan maksa narik ke atas lagi
+          if (currentStep === maxStep && window.scrollY <= 10) {
+            currentStep--;
+            isAnimating = true;
+            document.body.style.overflow = "hidden"; // Kunci lagi layarnya
+            
+            tl.tweenTo(`step${currentStep}`, {
+              ease: "power2.inOut",
+              onComplete: () => isAnimating = false
+            });
+          } 
+          // KONDISI NORMAL: Mundur step per step
+          else if (currentStep > 0 && currentStep < maxStep) {
+            currentStep--;
+            isAnimating = true;
+            tl.tweenTo(`step${currentStep}`, {
+              ease: "power2.inOut",
+              onComplete: () => {
+                isAnimating = false;
+                if (currentStep === 0) gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5 });
+              }
+            });
+          }
+        }
+      };
+
+      // LAPTOP / PC SCROLL WHEEL
+      const handleWheel = (e: WheelEvent) => {
+        // Kita blokir loncatan scroll mouse bawaan browser HANYA saat ada di dalam mode animasi step
+        if (currentStep < maxStep || (currentStep === maxStep && window.scrollY <= 10 && e.deltaY < 0)) {
+          if (currentStep < maxStep && e.cancelable) e.preventDefault(); 
+          
+          if (e.deltaY > 30) {
+            changeStep("next");
+          } else if (e.deltaY < -30) {
+            changeStep("prev");
+          }
+        }
+      };
+
+      // HP / SMARTPHONE SWIPE UP-DOWN
+      const handleTouchStart = (e: TouchEvent) => {
+        touchStartY = e.touches[0].clientY;
+      };
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (currentStep < maxStep || (currentStep === maxStep && window.scrollY <= 10)) {
+          const touchEndY = e.touches[0].clientY;
+          const deltaY = touchStartY - touchEndY; // Nilai positif = Swipe jari ke ATAS (Scroll Kebawah)
+
+          if (currentStep < maxStep || (currentStep === maxStep && window.scrollY <= 10 && deltaY < 0)) {
+             if (e.cancelable) e.preventDefault();
+          }
+
+          // Jarak toleransi agar jari goyang sedikit tidak langsung lompat scene
+          if (Math.abs(deltaY) > 40) { 
+            if (deltaY > 0) {
+              changeStep("next");
+            } else {
+              changeStep("prev");
+            }
+            touchStartY = touchEndY; // Reset biar sekali swipe panjang cuma hitung 1x trigger
+          }
+        }
+      };
+
+      // DAFTARKAN EVENT LISTENER (passive: false wajib biar bisa e.preventDefault())
+      window.addEventListener("wheel", handleWheel, { passive: false });
+      window.addEventListener("touchstart", handleTouchStart, { passive: false });
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
 
       // ✨ ALUR 8: MOBILE JOURNEY (Card Stacking)
-      // Dipindahkan ke sini agar 100% tersinkronisasi dengan master timeline tanpa bentrok siklus React!
       let mm = gsap.matchMedia();
       mm.add("(max-width: 767px)", () => {
         const mjTl = gsap.timeline({
@@ -323,9 +236,14 @@ export default function WeddingPage() {
           );
         }
       });
-
-    // ✨ BUG FIXED: Scope diubah ke mainRef agar GSAP bisa nyeleksi elemen di seluruh halaman
-    }, mainRef.current); 
+      
+      // ✨ BERSIHKAN LISTENER JIKA COMPONENT UNMOUNT
+      return () => {
+        window.removeEventListener("wheel", handleWheel);
+        window.removeEventListener("touchstart", handleTouchStart);
+        window.removeEventListener("touchmove", handleTouchMove);
+      };
+    }, mainRef.current);
 
     return () => ctx.revert();
   }, [isStarted]);
@@ -383,8 +301,8 @@ export default function WeddingPage() {
 
       {isStarted && (
         <>
-          {/* ✨ TEKNIK PIN 0-HEIGHT: Bikin kontainer utama h-0 & z-50. 
-              Ini bikin layar di bawahnya menyusup naik DI BELAKANG layar ini secara rahasia, jadi nggak ada tabrakan CSS! */}
+          {/* ✨ TEKNIK NO-PIN 0-HEIGHT: Bikin kontainer utama h-0 & z-50. 
+              Layar Gallery dkk udah antre tepat di bawah elemen ini! */}
           <div ref={visualRoomsRef} className="relative w-full h-0 z-50">
             <div className="visual-rooms-content absolute top-0 left-0 w-full h-[100dvh] overflow-hidden bg-[#d6d3d1]">
   
@@ -500,7 +418,7 @@ export default function WeddingPage() {
 
           {/* ✨ POINT 3: PERSISTENT SCROLL INDICATOR */}
           {/* Mengendap di bawah layar, aman dari tap user berkat pointer-events-none, bergradasi, dan hilang di cover (karena ada dalam isStarted) */}
-          <div className="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent z-[100] flex flex-col items-center justify-end pb-6 pointer-events-none">
+          <div className="scroll-indicator fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent z-[100] flex flex-col items-center justify-end pb-6 pointer-events-none">
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
