@@ -174,7 +174,7 @@ export default function WeddingPage() {
             
             tl.tweenTo(`step${currentStep}`, {
               ease: "power2.inOut",
-              onComplete: () => isAnimating = false
+              onComplete: () => { isAnimating = false; }
             });
           } 
           // KONDISI NORMAL: Mundur step per step
@@ -208,10 +208,16 @@ export default function WeddingPage() {
 
       // HP / SMARTPHONE SWIPE UP-DOWN
       const handleTouchStart = (e: TouchEvent) => {
-        touchStartY = e.touches[0].clientY;
+        // ✨ Cegah TS Error: Pastikan e.touches[0] tidak undefined
+        if (e.touches && e.touches.length > 0) {
+          touchStartY = e.touches[0].clientY;
+        }
       };
 
       const handleTouchMove = (e: TouchEvent) => {
+        // ✨ Cegah TS Error: Hentikan fungsi jika tidak ada sentuhan terdeteksi
+        if (!e.touches || e.touches.length === 0) return;
+        
         if (currentStep < maxStep || (currentStep === maxStep && window.scrollY <= 10)) {
           const touchEndY = e.touches[0].clientY;
           const deltaY = touchStartY - touchEndY; // Nilai positif = Swipe jari ke ATAS (Scroll Kebawah)
