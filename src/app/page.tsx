@@ -150,8 +150,8 @@ export default function WeddingPage() {
           currentStep++;
           isAnimating = true;
 
-          // Sembunyikan indikator scroll di bawah layar setelah 1 tarikan
-          if (currentStep === 1) gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5 });
+          // ✨ Sembunyikan indikator scroll HANYA jika tamu sudah mentok ke halaman terakhir (bebas scroll)
+          if (currentStep === maxStep) gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5 });
 
           tl.tweenTo(`step${currentStep}`, {
             duration: 0.85, // ✨ PAKSA durasi jadi singkat (gak nunggu 1.5 detik) agar input scroll cepat dilepas!
@@ -172,6 +172,7 @@ export default function WeddingPage() {
             currentStep--;
             isAnimating = true;
             document.body.style.overflow = "hidden"; // Kunci lagi layarnya
+            gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5 }); // ✨ Munculkan lagi indikatornya jika user scroll ke atas
             
             tl.tweenTo(`step${currentStep}`, {
               duration: 0.85,
@@ -188,7 +189,6 @@ export default function WeddingPage() {
               ease: "power2.inOut",
               onComplete: () => {
                 isAnimating = false;
-                if (currentStep === 0) gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5 });
               }
             });
           }
