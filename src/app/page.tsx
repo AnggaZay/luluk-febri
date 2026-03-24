@@ -440,12 +440,12 @@ export default function WeddingPage() {
           </div>
 
           {/* ✨ ELEMEN AUDIO (Sembunyi dari UI) */}
-          <audio ref={audioRef} src="/musik-bg.mp3" loop />
+          <audio ref={audioRef} src="/musik-bg.mp3" preload="auto" loop />
 
           {/* ✨ TOMBOL FLOATING MUSIC (Bisa diklik buat pause/play) */}
           <button
             onClick={toggleMusic}
-            className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[110] w-12 h-12 md:w-14 md:h-14 bg-white/70 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-stone-200 text-stone-700 hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-[110] w-12 h-12 md:w-14 md:h-14 bg-white/70 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-stone-200 text-stone-700 hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer"
             aria-label="Toggle Music"
           >
             {isPlaying ? (
