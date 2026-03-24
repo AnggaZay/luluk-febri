@@ -108,7 +108,8 @@ export default function WeddingPage() {
       // STEP 5: FADE BERAWAN & MUNCUL GALLERY (Scroll Normal Dibuka)
       tl.to(".white-cloud-overlay", { opacity: 1, ease: "power2.inOut", duration: 1 }, "step4+=0.1");
       tl.to(".wall-bg-vignette", { opacity: 0, duration: 1 }, "<");
-      tl.to([".event-scene", ".wall-bg-texture"], { scale: "+=0.2", opacity: 0, duration: 1 }, "<");
+      // ✨ ANTI-LAG: Hapus animasi scale (+=0.2) saat fade awan agar GPU tidak terbebani menghitung ulang piksel
+      tl.to([".event-scene", ".wall-bg-texture"], { opacity: 0, duration: 1 }, "<");
       tl.to(".visual-rooms-content", { autoAlpha: 0, duration: 0.1 });
 
       tl.addLabel("step5");
@@ -314,8 +315,8 @@ export default function WeddingPage() {
         {!isStarted && (
           <motion.div 
             key="cover-layer"
-            exit={{ scale: 20, opacity: 0 }}
-            transition={{ duration: 1.5 }}
+            exit={{ y: "-100%", opacity: 0 }} // ✨ Diganti jadi slide tirai ke atas
+            transition={{ duration: 0.8, ease: "easeInOut" }} // ✨ Durasi dipersingkat biar lebih responsif (gak kelamaan nunggu)
             className="fixed inset-0 z-[100] h-[100dvh] w-full"
           >
             <Cover data={WeddingData} onOpen={handleOpenInvitation} />
@@ -456,9 +457,6 @@ export default function WeddingPage() {
               </svg>
             </motion.div>
           </div>
-
-          {/* ✨ ELEMEN AUDIO (Sembunyi dari UI) */}
-          <audio ref={audioRef} src="/musik-bg.mp3" preload="auto" loop />
 
           {/* ✨ TOMBOL FLOATING MUSIC (Bisa diklik buat pause/play) */}
           <button
