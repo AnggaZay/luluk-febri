@@ -56,15 +56,15 @@ export default function WeddingPage() {
       tl.addLabel("step0");
 
       // STEP 1: WALL MINGGAT & GROOM (Pria) MASUK
-      tl.to(".wall-scene", { y: "-120%", opacity: 0, scale: 0.6, filter: "blur(15px)", ease: "power2.inOut", duration: 1.2 }, "step0+=0.1");
+      tl.to(".wall-scene", { y: "-120%", opacity: 0, scale: 0.6, ease: "power2.inOut", duration: 1.2 }, "step0+=0.1");
       tl.to(".wall-bg-texture", { scale: 1.5, y: "-30%", ease: "power2.inOut", duration: 1.2 }, "<");
       tl.to(".wall-bg-vignette", { opacity: 0.5, ease: "power2.inOut", duration: 1.2 }, "<");
       
-      tl.fromTo(".single-table-bg", { scale: 3, filter: "blur(20px)", opacity: 0, x: "-30vw", y: "20vh", transformOrigin: "left bottom" }, { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 }, "-=0.8");
+      tl.fromTo(".single-table-bg", { scale: 3, opacity: 0, x: "-30vw", y: "20vh", transformOrigin: "left bottom" }, { scale: 1, opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 }, "-=0.8");
       tl.fromTo(".table-items-wrapper", { opacity: 0 }, { opacity: 1, duration: 0.1 }, "<");
-      tl.fromTo(".bunga-meja-item", { scale: 2, filter: "blur(15px)", opacity: 0, x: "40vw", y: "15vh" }, { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 }, "-=1.2");
-      tl.fromTo(".groom-photo-item", { scale: 1.5, filter: "blur(15px)", opacity: 0, x: "25vw", y: "10vh", rotateY: 15 }, { scale: 1, filter: "blur(0px)", opacity: 1, x: 0, y: 0, rotateY: 0, ease: "power3.out", duration: 1.5 }, "-=1.0");
-      tl.fromTo(".groom-info-item", { opacity: 0, x: "-10vw", filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", ease: "power3.out", duration: 1.5 }, "-=1.0");
+      tl.fromTo(".bunga-meja-item", { scale: 2, opacity: 0, x: "40vw", y: "15vh" }, { scale: 1, opacity: 1, x: 0, y: 0, ease: "power3.out", duration: 1.5 }, "-=1.2");
+      tl.fromTo(".groom-photo-item", { scale: 1.5, opacity: 0, x: "25vw", y: "10vh", rotateY: 15 }, { scale: 1, opacity: 1, x: 0, y: 0, rotateY: 0, ease: "power3.out", duration: 1.5 }, "-=1.0");
+      tl.fromTo(".groom-info-item", { opacity: 0, x: "-10vw" }, { opacity: 1, x: 0, ease: "power3.out", duration: 1.5 }, "-=1.0");
 
       tl.addLabel("step1");
 
@@ -75,22 +75,22 @@ export default function WeddingPage() {
       tl.addLabel("step2");
 
       // STEP 3: EVENT BOOK MASUK
-      tl.to(".table-items-wrapper", { scale: 0.5, x: "-30vw", y: "-30vh", opacity: 0, filter: "blur(20px)", transformOrigin: "75% center", ease: "power2.inOut", duration: 1 }, "step2+=0.1");
-      tl.to(".single-table-bg", { scale: 0.5, x: "-30vw", y: "-30vh", opacity: 0, filter: "blur(20px)", transformOrigin: "95% center", ease: "power2.inOut", duration: 1 }, "<");
+      tl.to(".table-items-wrapper", { scale: 0.5, x: "-30vw", y: "-30vh", opacity: 0, transformOrigin: "75% center", ease: "power2.inOut", duration: 1 }, "step2+=0.1");
+      tl.to(".single-table-bg", { scale: 0.5, x: "-30vw", y: "-30vh", opacity: 0, transformOrigin: "95% center", ease: "power2.inOut", duration: 1 }, "<");
       
       tl.to(".event-scene", { opacity: 1, duration: 0.1 }, "-=0.5");
       tl.to(".wall-bg-texture", { scale: 1, ease: "power2.inOut", duration: 1.5 }, "<");
       
-      tl.fromTo(".event-lantai", { y: "50vh", scale: 1.5, filter: "blur(20px)" }, { y: 0, scale: 1, filter: "blur(0px)", ease: "power2.out", duration: 1.5 }, "<");
-      tl.fromTo(".event-papan", { x: "60vw", y: "40vh", scale: 1.8, filter: "blur(20px)", transformOrigin: "center 25%" }, { x: 0, y: 0, scale: 1, filter: "blur(0px)", transformOrigin: "center 25%", ease: "power3.out", duration: 1.5 }, "-=1.0");
-      tl.fromTo(".event-bunga-berdiri", { x: "70vw", y: "50vh", scale: 1.6, filter: "blur(20px)" }, { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 }, "-=1.2");
-      tl.fromTo(".event-bunga-lantai", { x: "80vw", y: "60vh", scale: 1.7, filter: "blur(20px)" }, { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 }, "-=1.2");
+      tl.fromTo(".event-lantai", { y: "50vh", scale: 1.5 }, { y: 0, scale: 1, ease: "power2.out", duration: 1.5 }, "<");
+      tl.fromTo(".event-papan", { x: "60vw", y: "40vh", scale: 1.8, transformOrigin: "center 25%" }, { x: 0, y: 0, scale: 1, transformOrigin: "center 25%", ease: "power3.out", duration: 1.5 }, "-=1.0");
+      tl.fromTo(".event-bunga-berdiri", { x: "70vw", y: "50vh", scale: 1.6 }, { x: 0, y: 0, scale: 1, ease: "power3.out", duration: 1.5 }, "-=1.2");
+      tl.fromTo(".event-bunga-lantai", { x: "80vw", y: "60vh", scale: 1.7 }, { x: 0, y: 0, scale: 1, ease: "power3.out", duration: 1.5 }, "-=1.2");
 
       tl.addLabel("step3");
 
       // STEP 4: EVENT BOOK ZOOM (Reading Mode)
       tl.to(".wall-bg-texture", { scale: 1.2, ease: "power2.inOut", duration: 1.5 }, "step3+=0.1");
-      tl.to(".event-bunga-berdiri", { scale: 2, x: "-25vw", y: "10vh", filter: "blur(5px)", ease: "power2.inOut", duration: 1.5 }, "<");
+      tl.to(".event-bunga-berdiri", { scale: 2, x: "-25vw", y: "10vh", opacity: 0.5, ease: "power2.inOut", duration: 1.5 }, "<");
       tl.to([".event-bunga-lantai", ".event-lantai"], { scale: 1.5, y: "30vh", opacity: 0, ease: "power2.inOut", duration: 1.5 }, "<");
       tl.to(".event-papan", { scale: 1.8, ease: "power2.inOut", duration: 1.5 }, "<");
 
@@ -99,7 +99,7 @@ export default function WeddingPage() {
       // STEP 5: FADE BERAWAN & MUNCUL GALLERY (Scroll Normal Dibuka)
       tl.to(".white-cloud-overlay", { opacity: 1, ease: "power2.inOut", duration: 1 }, "step4+=0.1");
       tl.to(".wall-bg-vignette", { opacity: 0, duration: 1 }, "<");
-      tl.to([".event-scene", ".wall-bg-texture"], { filter: "blur(30px)", scale: "+=0.2", opacity: 0, duration: 1 }, "<");
+      tl.to([".event-scene", ".wall-bg-texture"], { scale: "+=0.2", opacity: 0, duration: 1 }, "<");
       tl.to(".visual-rooms-content", { autoAlpha: 0, duration: 0.1 });
 
       tl.addLabel("step5");
