@@ -9,8 +9,8 @@ export default function GallerySection({ data }: { data: typeof WeddingData }) {
     <div className="w-full max-w-4xl mx-auto pt-4 md:pt-8 pb-12 px-6 flex flex-col items-center">
       {/* HEADER GALLERY */}
       <motion.div 
-        initial={{ opacity: 0, scale: 0.5 }}
-        whileInView={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
         className="text-center mb-10"
@@ -25,8 +25,8 @@ export default function GallerySection({ data }: { data: typeof WeddingData }) {
         {data.gallery.map((src, index) => (
           <motion.div
             key={index}
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: (index % 3) * 0.15, duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
             className={`relative w-full ${index % 3 === 0 ? 'aspect-square' : 'aspect-[4/5]'} rounded-xl overflow-hidden shadow-sm bg-stone-100`}

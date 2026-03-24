@@ -124,18 +124,18 @@ export default function WeddingPage() {
           const prevStepNum = 5 + i - 1; // 5, 6, 7
           const currentStepNum = 5 + i;  // 6, 7, 8
 
-          tl.to(`.mobile-gallery-${i - 1}`, { scale: 0.9, opacity: 0.5, duration: 1 }, `step${prevStepNum}+=0.1`);
-          tl.to(`.mobile-story-${i - 1}`, { scale: 0.9, opacity: 0, duration: 1 }, `<`);
+          tl.to(`.mobile-gallery-${i - 1}`, { y: "-10vh", opacity: 0, duration: 1 }, `step${prevStepNum}+=0.1`);
+          tl.to(`.mobile-story-${i - 1}`, { y: "-10vh", opacity: 0, duration: 1 }, `<`);
 
           tl.fromTo(`.mobile-gallery-${i}`,
-            { y: "60vh", opacity: 0, rotate: i % 2 === 0 ? 8 : -8, scale: 1.1 },
-            { y: "0vh", opacity: 1, rotate: i % 2 === 0 ? -2 : 2, scale: 1, ease: "back.out(1.2)", duration: 1 },
+            { y: "30vh", opacity: 0 },
+            { y: "0vh", opacity: 1, ease: "power2.out", duration: 1 },
             `<`
           );
 
           tl.fromTo(`.mobile-story-${i}`,
-            { y: "40vh", opacity: 0, scale: 0.8 },
-            { y: "0vh", opacity: 1, scale: 1, ease: "back.out(1.2)", duration: 1 },
+            { y: "20vh", opacity: 0 },
+            { y: "0vh", opacity: 1, ease: "power2.out", duration: 1 },
             `<`
           );
           
