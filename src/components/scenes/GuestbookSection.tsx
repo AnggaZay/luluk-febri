@@ -14,6 +14,7 @@ export default function GuestbookSection() {
   const [showReminder, setShowReminder] = useState(false);
   const [hasShown, setHasShown] = useState(false); // Biar cuma muncul 1x per sesi
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false); // ✨ State untuk pop-up sukses
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,7 @@ export default function GuestbookSection() {
       alert(`Gagal: ${error.message || "Unknown error"}`);
       console.error("Supabase Error:", error);
     } else {
-      alert("Terima kasih atas ucapan & doanya!");
+      setShowSuccess(true); // ✨ Tampilkan pop-up sukses custom
       setFormData({ nama: '', ucapan: '', kehadiran: '', jumlahTamu: '1' });
     }
   };
@@ -69,6 +70,35 @@ export default function GuestbookSection() {
                 className="w-full py-3.5 bg-amber-800 text-white rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg shadow-amber-900/20 active:scale-95 transition-all"
               >
                 Siap, laksanakan! 🫡
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ✨ POP-UP SUKSES KIRIM UCAPAN */}
+      <AnimatePresence>
+        {showSuccess && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-stone-900/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white rounded-3xl p-6 md:p-8 max-w-[320px] w-full shadow-2xl border border-stone-100 text-center relative"
+            >
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                🎉
+              </div>
+              <h3 className="font-serif text-xl text-stone-800 mb-2">Terima Kasih!</h3>
+              <p className="text-[11px] md:text-xs text-stone-600 mb-6 leading-relaxed px-2">
+                Doa restu dan ucapan Anda telah kami terima. Kehadiran Anda akan menjadi kebahagiaan bagi kami.
+              </p>
+              <button
+                onClick={() => setShowSuccess(false)}
+                className="w-full py-3.5 bg-green-700 text-white rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg shadow-green-900/20 active:scale-95 transition-all"
+              >
+                Sama-sama! ❤️
               </button>
             </motion.div>
           </div>
@@ -111,6 +141,7 @@ export default function GuestbookSection() {
             type="text"
             required
             placeholder="Tuliskan nama Anda"
+            value={formData.nama}
             className="w-full p-4 bg-stone-50 border border-stone-100 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-stone-300 transition-all placeholder:text-stone-300"
             onChange={(e) => setFormData({...formData, nama: e.target.value})}
           />
@@ -122,6 +153,7 @@ export default function GuestbookSection() {
           <div className="relative">
             <select 
               required
+              value={formData.kehadiran}
               className="w-full p-4 bg-stone-50 border border-stone-100 rounded-xl text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-stone-300 transition-all text-stone-700"
               onChange={(e) => setFormData({...formData, kehadiran: e.target.value})}
             >
@@ -175,6 +207,7 @@ export default function GuestbookSection() {
             rows={4}
             required
             placeholder="Tuliskan pesan manis untuk kedua mempelai..."
+            value={formData.ucapan}
             className="w-full p-4 bg-stone-50 border border-stone-100 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-stone-300 transition-all placeholder:text-stone-300 resize-none"
             onChange={(e) => setFormData({...formData, ucapan: e.target.value})}
           />
