@@ -23,8 +23,10 @@ if (typeof window !== "undefined") {
 
 export default function WeddingPage() {
   const [isStarted, setIsStarted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false); // ✨ State deteksi musik nyala/mati
   const visualRoomsRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null); // ✨ Referensi untuk elemen audio
 
   useEffect(() => {
     // 1. KUNCI SCROLL RESTORATION: Cegah browser lompat ke posisi scroll bawah saat di-refresh
@@ -328,6 +330,27 @@ export default function WeddingPage() {
     return () => ctx.revert();
   }, [isStarted]);
 
+  // ✨ EFEK MUSIK: Play otomatis saat tamu menekan tombol "Buka Undangan" di Cover
+  useEffect(() => {
+    if (isStarted && audioRef.current) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch((err) => console.log("Autoplay ter-block oleh browser:", err));
+    }
+  }, [isStarted]);
+
+  // ✨ FUNGSI TOGGLE: Untuk tombol play/pause manual
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <>
       {/* ✨ POINT 2: DESKTOP FALLBACK (Hanya muncul di layar PC/Tablet besar) */}
@@ -491,6 +514,24 @@ export default function WeddingPage() {
               </svg>
             </motion.div>
           </div>
+
+          {/* ✨ ELEMEN AUDIO (Sembunyi dari UI) */}
+          <audio ref={audioRef} src="/musik-bg.mp3" loop />
+
+          {/* ✨ TOMBOL FLOATING MUSIC (Bisa diklik buat pause/play) */}
+          <button
+            onClick={toggleMusic}
+            className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[110] w-12 h-12 md:w-14 md:h-14 bg-white/70 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-stone-200 text-stone-700 hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            aria-label="Toggle Music"
+          >
+            {isPlaying ? (
+              // Ikon Pause
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            ) : (
+              // Ikon Play
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            )}
+          </button>
 
         </>
       )}
