@@ -424,7 +424,7 @@ export default function WeddingPage() {
               {/* ✨ TRADEMARK / DEVELOPER SPACE */}
               <div className="mb-24 text-center">
                 <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-medium text-[#20636e]">
-                  Dibuat oleh <span className="font-bold tracking-[0.3em]">Helvetecha</span>
+                  Bagian karya <span className="font-bold tracking-[0.3em]">Helvetecha</span>
                 </p>
               </div>
 
