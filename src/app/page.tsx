@@ -254,14 +254,16 @@ export default function WeddingPage() {
     return () => ctx.revert();
   }, [isStarted]);
 
-  // ✨ EFEK MUSIK: Play otomatis saat tamu menekan tombol "Buka Undangan" di Cover
-  useEffect(() => {
-    if (isStarted && audioRef.current) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch((err) => console.log("Autoplay ter-block oleh browser:", err));
+  // ✨ FUNGSI BUKA UNDANGAN & PLAY MUSIK
+  // Wajib dipanggil langsung dari event onClick agar browser (terutama iOS/Safari) tidak memblokir autoplay
+  const handleOpenInvitation = () => {
+    setIsStarted(true);
+    if (audioRef.current) {
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => console.log("Autoplay ter-block oleh browser:", err));
     }
-  }, [isStarted]);
+  };
 
   // ✨ FUNGSI TOGGLE: Untuk tombol play/pause manual
   const toggleMusic = () => {
@@ -300,7 +302,7 @@ export default function WeddingPage() {
             transition={{ duration: 1.5 }}
             className="fixed inset-0 z-[100] h-[100dvh] w-full"
           >
-            <Cover data={WeddingData} onOpen={() => setIsStarted(true)} />
+            <Cover data={WeddingData} onOpen={handleOpenInvitation} />
           </motion.div>
         )}
       </AnimatePresence>
