@@ -154,7 +154,8 @@ export default function WeddingPage() {
           if (currentStep === 1) gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5 });
 
           tl.tweenTo(`step${currentStep}`, {
-            ease: "power3.out", // ✨ Ganti ke .out agar gerakan langsung responsif/instan
+            duration: 0.85, // ✨ PAKSA durasi jadi singkat (gak nunggu 1.5 detik) agar input scroll cepat dilepas!
+            ease: "power2.inOut", 
             onComplete: () => {
               isAnimating = false;
               if (currentStep === maxStep) {
@@ -173,7 +174,8 @@ export default function WeddingPage() {
             document.body.style.overflow = "hidden"; // Kunci lagi layarnya
             
             tl.tweenTo(`step${currentStep}`, {
-              ease: "power3.out",
+              duration: 0.85,
+              ease: "power2.inOut",
               onComplete: () => { isAnimating = false; }
             });
           } 
@@ -182,7 +184,8 @@ export default function WeddingPage() {
             currentStep--;
             isAnimating = true;
             tl.tweenTo(`step${currentStep}`, {
-              ease: "power3.out",
+              duration: 0.85,
+              ease: "power2.inOut",
               onComplete: () => {
                 isAnimating = false;
                 if (currentStep === 0) gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5 });
