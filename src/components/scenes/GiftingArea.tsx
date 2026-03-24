@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WeddingData } from '@/data/invitation';
+import Image from 'next/image';
 
 interface GiftingAreaProps {
   data: typeof WeddingData;
@@ -43,8 +44,11 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
           {/* Rekening Mempelai Pria */}
           <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex justify-between items-center relative">
             <div>
-              <p className="text-[9px] font-bold text-amber-800 uppercase tracking-tighter">Bank Transfer - {data.groom.shortName}</p>
-              <p className="text-sm font-mono font-bold text-stone-800 mt-1">{data.groom.dana}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <Image src="/dana-logo.svg" alt="DANA" width={40} height={14} className="object-contain" />
+                <p className="text-[9px] font-bold text-amber-800 uppercase tracking-tighter">- {data.groom.shortName}</p>
+              </div>
+              <p className="text-sm font-mono font-bold text-stone-800">{data.groom.dana}</p>
             </div>
             <button 
               onClick={() => copyToClipboard(data.groom.dana, 'groom')}
@@ -64,8 +68,11 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
           {/* Rekening Mempelai Wanita */}
           <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex justify-between items-center relative">
             <div>
-              <p className="text-[9px] font-bold text-amber-800 uppercase tracking-tighter">Bank Transfer - {data.bride.shortName}</p>
-              <p className="text-sm font-mono font-bold text-stone-800 mt-1">{data.bride.dana}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <Image src="/dana-logo.svg" alt="DANA" width={40} height={14} className="object-contain" />
+                <p className="text-[9px] font-bold text-amber-800 uppercase tracking-tighter">- {data.bride.shortName}</p>
+              </div>
+              <p className="text-sm font-mono font-bold text-stone-800">{data.bride.dana}</p>
             </div>
             <button 
               onClick={() => copyToClipboard(data.bride.dana, 'bride')}
