@@ -12,7 +12,9 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
   const copyToClipboard = (text: string, type: string) => {
-    navigator.clipboard.writeText(text);
+    // ✨ Hapus karakter strip (-) dan spasi agar bersih saat di-paste ke M-Banking/DANA
+    const cleanText = text.replace(/[- ]/g, '');
+    navigator.clipboard.writeText(cleanText);
     setCopied(type);
     setTimeout(() => setCopied(null), 2000);
   };
