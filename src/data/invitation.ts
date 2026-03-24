@@ -11,8 +11,8 @@ export const WeddingData = {
     dana: "0888-0690-7354",
   },
   groom: {
-    fullName: "Dwi Febriyanto",
-    shortName: "Febri",
+    fullName: "Dwi Febiyanto",
+    shortName: "Febi",
     parents: "Putra Bpk. Darnoto & Ibu Munirah",
     address: "Tratebang, Wonokerto",
     photo: "/images/groom.png", // Path ke public/images
@@ -24,7 +24,7 @@ export const WeddingData = {
       time: "07.00 - 08.00 WIB",
       location: "Tempat Mempelai Wanita",
       address: "Ds. Werdi, Dk. Werdi Tengah RT 13/ RW 06, Kec. Wonokerto, Kab. Pekalongan, Jawa Tengah (51153)",
-      mapsUrl: "https://maps.google.com/?q=Werdi+Wonokerto+Pekalongan",
+      mapsUrl: "https://maps.app.goo.gl/QgqkoXQYt3VXeptc8",
     },
     ramahTamah: {
       date: "31 Maret - 1 April 2026",
@@ -35,7 +35,7 @@ export const WeddingData = {
     resepsi: {
       date: "2026-04-01",
       time: "13.00 - Selesai",
-      location: "Kediaman Mempelai",
+      location: "Kediaman Mempelai Wanita",
       mapsUrl: "#",
     }
   },

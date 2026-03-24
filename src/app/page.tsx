@@ -42,6 +42,9 @@ export default function WeddingPage() {
     document.body.style.overflow = "auto";
     window.scrollTo(0, 0);
 
+    // ✨ Cegah TS Error: Pastikan elemen sudah ada di DOM sebelum menjalankan GSAP
+    if (!visualRoomsRef.current || !mainRef.current) return;
+
     const ctx = gsap.context(() => {
       
       // MASTER TIMELINE
@@ -320,7 +323,7 @@ export default function WeddingPage() {
       });
 
     // ✨ BUG FIXED: Scope diubah ke mainRef agar GSAP bisa nyeleksi elemen di seluruh halaman
-    }, mainRef); 
+    }, mainRef.current); 
 
     return () => ctx.revert();
   }, [isStarted]);
