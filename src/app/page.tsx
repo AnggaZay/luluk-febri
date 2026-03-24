@@ -286,6 +286,39 @@ export default function WeddingPage() {
         ScrollTrigger.refresh();
       }, 1500);
 
+      // ✨ ALUR 8: MOBILE JOURNEY (Card Stacking)
+      // Dipindahkan ke sini agar 100% tersinkronisasi dengan master timeline tanpa bentrok siklus React!
+      let mm = gsap.matchMedia();
+      mm.add("(max-width: 767px)", () => {
+        const mjTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".mobile-journey-container",
+            start: "top top",
+            end: "+=3000",
+            pin: true,
+            scrub: 1,
+            snap: 1 / 3, // 4 Cerita = 3 Transisi
+          }
+        });
+
+        for (let i = 1; i < 4; i++) {
+          mjTl.to(`.mobile-gallery-${i - 1}`, { scale: 0.9, opacity: 0.5, duration: 1 }, `step${i}`);
+          mjTl.to(`.mobile-story-${i - 1}`, { scale: 0.9, opacity: 0, duration: 1 }, `step${i}`);
+
+          mjTl.fromTo(`.mobile-gallery-${i}`,
+            { y: "60vh", opacity: 0, rotate: i % 2 === 0 ? 8 : -8, scale: 1.1 },
+            { y: "0vh", opacity: 1, rotate: i % 2 === 0 ? -2 : 2, scale: 1, ease: "back.out(1.2)", duration: 1 },
+            `step${i}`
+          );
+
+          mjTl.fromTo(`.mobile-story-${i}`,
+            { y: "40vh", opacity: 0, scale: 0.8 },
+            { y: "0vh", opacity: 1, scale: 1, ease: "back.out(1.2)", duration: 1 },
+            `step${i}`
+          );
+        }
+      });
+
     // ✨ BUG FIXED: Scope diubah ke mainRef agar GSAP bisa nyeleksi elemen di seluruh halaman
     }, mainRef); 
 
@@ -329,76 +362,74 @@ export default function WeddingPage() {
           <div ref={visualRoomsRef} className="relative w-full h-0 z-50">
             <div className="visual-rooms-content absolute top-0 left-0 w-full h-[100dvh] overflow-hidden bg-[#d6d3d1]">
   
-  {/* --- BACKGROUND TEMBOK WITH PARALLAX --- */}
-  <div className="absolute inset-0 z-0 overflow-hidden">
-    {/* Inner container for parallax movement */}
-    <div className="wall-bg-texture absolute inset-0 w-full h-full">
-      <Image 
-        src="/images/wall-texture.webp"
-        alt="Wall Background"
-        fill
-        className="object-cover opacity-90"
-        priority
-      />
-    </div>
-    
-    {/* Vignette overlay that darkens during scroll */}
-    <div className="wall-bg-vignette absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none" />
-  </div>
+                  {/* --- BACKGROUND TEMBOK WITH PARALLAX --- */}
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    {/* Inner container for parallax movement */}
+                    <div className="wall-bg-texture absolute inset-0 w-full h-full">
+                      <Image 
+                        src="/images/wall-texture.webp"
+                        alt="Wall Background"
+                        fill
+                        className="object-cover opacity-90"
+                        priority
+                      />
+                    </div>
+                    
+                    {/* Vignette overlay that darkens during scroll */}
+                    <div className="wall-bg-vignette absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20 pointer-events-none" />
+                  </div>
 
-  {/* --- SCREEN 1: WALL SCENE (Kalender & Jam) --- */}
-  {/* z-index harus lebih tinggi dari background tapi bisa dipukul ke atas oleh GSAP */}
-  <section className="wall-scene absolute inset-0 z-[40] flex flex-col items-center justify-center px-6 pointer-events-none">
-    <div className="pointer-events-auto">
-      <CountdownWall data={WeddingData} />
-    </div>
-  </section>
+                  {/* --- SCREEN 1: WALL SCENE (Kalender & Jam) --- */}
+                  {/* z-index harus lebih tinggi dari background tapi bisa dipukul ke atas oleh GSAP */}
+                  <section className="wall-scene absolute inset-0 z-[40] flex flex-col items-center justify-center px-6 pointer-events-none">
+                    <div className="pointer-events-auto">
+                      <CountdownWall data={WeddingData} />
+                    </div>
+                  </section>
 
-            {/* SCREEN 2-6 BACKGROUND: MEJA PANJANG (SINGLE ASSET UTUH) */}
-            <div 
-              className="single-table-bg absolute inset-0 z-[25] pointer-events-none opacity-0"
-            >
-              <Image
-                src="/images/meja.webp"
-                alt="Meja"
-                fill
-                // ✨ CUSTOM UKURAN MEJA DI SINI: Ubah scale-185 (misal jadi scale-150, scale-200, dll)
-                className="object-contain object-bottom origin-bottom-left scale-205"
-                sizes="100vw"
-              />
-            </div>
+                  {/* SCREEN 2-6 BACKGROUND: MEJA PANJANG (SINGLE ASSET UTUH) */}
+                  <div className="single-table-bg absolute inset-0 z-[25] pointer-events-none opacity-0">
+                    <Image
+                      src="/images/meja.webp"
+                      alt="Meja"
+                      fill
+                      // ✨ CUSTOM UKURAN MEJA DI SINI: Ubah scale-185 (misal jadi scale-150, scale-200, dll)
+                      className="object-contain object-bottom origin-bottom-left scale-205"
+                      sizes="100vw"
+                    />
+                  </div>
 
-            {/* SCREEN 2-3: MEJA PANJANG (HANYA PRIA & WANITA) */}
-            <div className="table-items-wrapper absolute inset-0 w-[200vw] flex z-[30] opacity-0">
-              
-              {/* ORNAMEN BUNGA MEJA (Satu aset pas di tengah antara Pria & Wanita) */}
-              {/* left-[100vw] memastikan letaknya tepat di perbatasan layar 1 dan 2 */}
-              {/* ✨ CUSTOM POSISI BUNGA DI SINI: Ubah top-[40%] ke angka yang lebih kecil (misal 30% atau 20%) untuk makin ke atas */}
-              <div className="absolute top-[60%] left-[95vw] -translate-x-1/2 -translate-y-1/2 z-10 w-[450px] aspect-square pointer-events-none">
-                <div className="bunga-meja-item relative w-full h-full opacity-0">
-                  <Image 
-                    src="/images/bunga-meja.webp" 
-                    alt="Bunga Meja" 
-                    fill 
-                    className="object-contain drop-shadow-2xl" 
-                    sizes="450px" 
-                  />
-                </div>
-              </div>
+                  {/* SCREEN 2-3: MEJA PANJANG (HANYA PRIA & WANITA) */}
+                  <div className="table-items-wrapper absolute inset-0 w-[200vw] flex z-[30] opacity-0">
+                    
+                    {/* ORNAMEN BUNGA MEJA (Satu aset pas di tengah antara Pria & Wanita) */}
+                    {/* left-[100vw] memastikan letaknya tepat di perbatasan layar 1 dan 2 */}
+                    {/* ✨ CUSTOM POSISI BUNGA DI SINI: Ubah top-[40%] ke angka yang lebih kecil (misal 30% atau 20%) untuk makin ke atas */}
+                    <div className="absolute top-[60%] left-[95vw] -translate-x-1/2 -translate-y-1/2 z-10 w-[450px] aspect-square pointer-events-none">
+                      <div className="bunga-meja-item relative w-full h-full opacity-0">
+                        <Image 
+                          src="/images/bunga-meja.webp" 
+                          alt="Bunga Meja" 
+                          fill 
+                          className="object-contain drop-shadow-2xl" 
+                          sizes="450px" 
+                        />
+                      </div>
+                    </div>
 
-              <div className="w-[100vw] h-full flex-shrink-0 flex items-center justify-center">
-                <ProfileTable type="groom" data={WeddingData.groom} />
-              </div>
-              <div className="w-[100vw] h-full flex-shrink-0 flex items-center justify-center">
-                <ProfileTable type="bride" data={WeddingData.bride} />
-              </div>
-            </div>
+                    <div className="w-[100vw] h-full flex-shrink-0 flex items-center justify-center">
+                      <ProfileTable type="groom" data={WeddingData.groom} />
+                    </div>
+                    <div className="w-[100vw] h-full flex-shrink-0 flex items-center justify-center">
+                      <ProfileTable type="bride" data={WeddingData.bride} />
+                    </div>
+                  </div>
 
-            {/* SCREEN 4: EVENT BOOK SCENE (Di Animasi yang sama!) */}
-            <EventBook data={WeddingData.events} />
+                  {/* SCREEN 4: EVENT BOOK SCENE (Di Animasi yang sama!) */}
+                  <EventBook data={WeddingData.events} />
 
-            {/* OVERLAY AWAN PUTIH (Buat transisi nyambung ke layout normal di bawah) */}
-            <div className="white-cloud-overlay absolute inset-0 z-[60] bg-white opacity-0 pointer-events-none" />
+                  {/* OVERLAY AWAN PUTIH (Buat transisi nyambung ke layout normal di bawah) */}
+                  <div className="white-cloud-overlay absolute inset-0 z-[60] bg-white opacity-0 pointer-events-none" />
             </div>
           </div>
 

@@ -1,59 +1,14 @@
 "use client";
 
-import { useRef } from 'react';
 import Image from 'next/image';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { WeddingData } from '@/data/invitation';
 import { Parisienne } from 'next/font/google';
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
 
 const parisienne = Parisienne({ subsets: ['latin'], weight: ['400'] });
 
 export default function MobileJourney({ data }: { data: typeof WeddingData }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "+=3000", // Panjang lintasan scroll untuk 4 cerita
-          pin: true,     // Tahan layar
-          scrub: 1,      // Animasi smooth
-          snap: 1 / 3,   // ✨ INI RAHASIANYA: Mau di-scroll sekenceng apapun, dia otomatis ngerem dan berhenti tepat di 4 titik (0%, 33%, 66%, 100%)
-        }
-      });
-
-      // Looping 3 kali transisi (untuk 4 bagian cerita)
-      for (let i = 1; i < 4; i++) {
-        // 1. Tumpukan sebelumnya sedikit menyusut dan meredup (efek tertindih)
-        tl.to(`.mobile-gallery-${i - 1}`, { scale: 0.9, opacity: 0.5, duration: 1 }, `step${i}`);
-        tl.to(`.mobile-story-${i - 1}`, { scale: 0.9, opacity: 0, duration: 1 }, `step${i}`);
-
-        // 2. Foto Baru masuk numpuk dari bawah (efek lempar kartu)
-        tl.fromTo(`.mobile-gallery-${i}`,
-          { y: "60vh", opacity: 0, rotate: i % 2 === 0 ? 8 : -8, scale: 1.1 },
-          { y: "0vh", opacity: 1, rotate: i % 2 === 0 ? -2 : 2, scale: 1, ease: "back.out(1.2)", duration: 1 },
-          `step${i}`
-        );
-
-        // 3. Story Baru masuk numpuk dari bawah
-        tl.fromTo(`.mobile-story-${i}`,
-          { y: "40vh", opacity: 0, scale: 0.8 },
-          { y: "0vh", opacity: 1, scale: 1, ease: "back.out(1.2)", duration: 1 },
-          `step${i}`
-        );
-      }
-      
-  }, { scope: containerRef }); // ✨ Scope dimasukkan ke konfigurasi useGSAP
-
   return (
-    <div ref={containerRef} className="relative h-[100dvh] w-full bg-[#fdfbf7] flex flex-col overflow-hidden">
+    <div className="mobile-journey-container relative h-[100dvh] w-full bg-[#fdfbf7] flex flex-col overflow-hidden">
       
       {/* AREA ATAS: GALLERY GRID (2 Foto Sampingan 1:1) */}
       <div className="relative h-[50dvh] w-full pt-10 pb-2 px-6">
