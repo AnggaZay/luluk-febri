@@ -259,6 +259,7 @@ export default function WeddingPage() {
   const handleOpenInvitation = () => {
     setIsStarted(true);
     if (audioRef.current) {
+      audioRef.current.currentTime = 10; // ✨ Setel ke detik 10 sebelum diputar
       audioRef.current.play()
         .then(() => setIsPlaying(true))
         .catch((err) => console.log("Autoplay ter-block oleh browser:", err));
