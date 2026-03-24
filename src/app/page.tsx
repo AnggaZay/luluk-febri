@@ -104,10 +104,42 @@ export default function WeddingPage() {
 
       tl.addLabel("step5");
 
+      // ✨ NEW: GABUNGKAN MOBILE JOURNEY KE DALAM MASTER TIMELINE!
+      let maxStep = 5;
+      let mm = gsap.matchMedia();
+
+      mm.add("(max-width: 767px)", () => {
+        maxStep = 8; // Mobile punya 3 ekstra step buat transisi Gallery & Story
+
+        for (let i = 1; i < 4; i++) {
+          const prevStepNum = 5 + i - 1; // 5, 6, 7
+          const currentStepNum = 5 + i;  // 6, 7, 8
+
+          tl.to(`.mobile-gallery-${i - 1}`, { scale: 0.9, opacity: 0.5, duration: 1 }, `step${prevStepNum}+=0.1`);
+          tl.to(`.mobile-story-${i - 1}`, { scale: 0.9, opacity: 0, duration: 1 }, `<`);
+
+          tl.fromTo(`.mobile-gallery-${i}`,
+            { y: "60vh", opacity: 0, rotate: i % 2 === 0 ? 8 : -8, scale: 1.1 },
+            { y: "0vh", opacity: 1, rotate: i % 2 === 0 ? -2 : 2, scale: 1, ease: "back.out(1.2)", duration: 1 },
+            `<`
+          );
+
+          tl.fromTo(`.mobile-story-${i}`,
+            { y: "40vh", opacity: 0, scale: 0.8 },
+            { y: "0vh", opacity: 1, scale: 1, ease: "back.out(1.2)", duration: 1 },
+            `<`
+          );
+          
+          tl.addLabel(`step${currentStepNum}`);
+        }
+      });
+
+      mm.add("(min-width: 768px)", () => {
+        maxStep = 5; // Desktop mentok di step 5, sisanya natural scroll
+      });
 
       // ✨ LOGIC CONTROLLER WHEEL / TOUCH (SWIPE)
       let currentStep = 0;
-      const maxStep = 5;
       let isAnimating = false;
       let touchStartY = 0;
 
@@ -205,38 +237,6 @@ export default function WeddingPage() {
       window.addEventListener("touchstart", handleTouchStart, { passive: false });
       window.addEventListener("touchmove", handleTouchMove, { passive: false });
 
-      // ✨ ALUR 8: MOBILE JOURNEY (Card Stacking)
-      let mm = gsap.matchMedia();
-      mm.add("(max-width: 767px)", () => {
-        const mjTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: ".mobile-journey-container",
-            start: "top top",
-            end: "+=3000",
-            pin: true,
-            scrub: 1,
-            snap: 1 / 3, // 4 Cerita = 3 Transisi
-          }
-        });
-
-        for (let i = 1; i < 4; i++) {
-          mjTl.to(`.mobile-gallery-${i - 1}`, { scale: 0.9, opacity: 0.5, duration: 1 }, `step${i}`);
-          mjTl.to(`.mobile-story-${i - 1}`, { scale: 0.9, opacity: 0, duration: 1 }, `step${i}`);
-
-          mjTl.fromTo(`.mobile-gallery-${i}`,
-            { y: "60vh", opacity: 0, rotate: i % 2 === 0 ? 8 : -8, scale: 1.1 },
-            { y: "0vh", opacity: 1, rotate: i % 2 === 0 ? -2 : 2, scale: 1, ease: "back.out(1.2)", duration: 1 },
-            `step${i}`
-          );
-
-          mjTl.fromTo(`.mobile-story-${i}`,
-            { y: "40vh", opacity: 0, scale: 0.8 },
-            { y: "0vh", opacity: 1, scale: 1, ease: "back.out(1.2)", duration: 1 },
-            `step${i}`
-          );
-        }
-      });
-      
       // ✨ BERSIHKAN LISTENER JIKA COMPONENT UNMOUNT
       return () => {
         window.removeEventListener("wheel", handleWheel);
