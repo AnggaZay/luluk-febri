@@ -294,6 +294,9 @@ export default function WeddingPage() {
       {/* ✨ KUNCI ANTI CRASH: main biarkan normal, jangan dikasih display:none agar GSAP tidak error ketika dibuka di Desktop! */}
       <main ref={mainRef} className="relative bg-[#d6d3d1] w-full min-h-screen">
       
+      {/* ✨ PENTING: Elemen audio harus ditaruh di luar "isStarted" agar sudah stand-by sejak Cover muncul */}
+      <audio ref={audioRef} src="/musik-bg.mp3" preload="auto" loop />
+      
       <AnimatePresence>
         {!isStarted && (
           <motion.div 
