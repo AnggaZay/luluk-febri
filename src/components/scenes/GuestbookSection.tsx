@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 
 export default function GuestbookSection() {
   const [formData, setFormData] = useState({
@@ -12,12 +13,32 @@ export default function GuestbookSection() {
   });
   const [showReminder, setShowReminder] = useState(false);
   const [hasShown, setHasShown] = useState(false); // Biar cuma muncul 1x per sesi
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic kirim ke Firebase/Database lo di sini
-    console.log("Data dikirim:", formData);
-    alert("Terima kasih atas ucapan & doanya!");
+    setIsSubmitting(true);
+
+    const { error } = await supabase
+      .from('guestbook')
+      .insert([
+        {
+          nama: formData.nama,
+          kehadiran: formData.kehadiran,
+          jumlah_tamu: parseInt(formData.jumlahTamu),
+          ucapan: formData.ucapan
+        }
+      ]);
+
+    setIsSubmitting(false);
+
+    if (error) {
+      alert("Gagal mengirim ucapan, silakan coba lagi.");
+      console.error("Supabase Error:", error);
+    } else {
+      alert("Terima kasih atas ucapan & doanya!");
+      setFormData({ nama: '', ucapan: '', kehadiran: '', jumlahTamu: '1' });
+    }
   };
 
   return (
@@ -160,9 +181,10 @@ export default function GuestbookSection() {
         {/* Submit Button */}
         <button 
           type="submit"
-          className="w-full py-4 bg-stone-900 text-white rounded-xl text-xs uppercase tracking-[0.3em] font-bold shadow-lg shadow-stone-200 active:scale-95 transition-all mt-4"
+          disabled={isSubmitting}
+          className="w-full py-4 bg-stone-900 text-white rounded-xl text-xs uppercase tracking-[0.3em] font-bold shadow-lg shadow-stone-200 active:scale-95 transition-all mt-4 disabled:opacity-50"
         >
-          Kirim Ucapan
+          {isSubmitting ? "Mengirim..." : "Kirim Ucapan"}
         </button>
       </motion.form>
 
