@@ -154,7 +154,7 @@ export default function WeddingPage() {
           if (currentStep === 1) gsap.to(".scroll-indicator", { opacity: 0, duration: 0.5 });
 
           tl.tweenTo(`step${currentStep}`, {
-            ease: "power2.inOut",
+            ease: "power3.out", // ✨ Ganti ke .out agar gerakan langsung responsif/instan
             onComplete: () => {
               isAnimating = false;
               if (currentStep === maxStep) {
@@ -173,7 +173,7 @@ export default function WeddingPage() {
             document.body.style.overflow = "hidden"; // Kunci lagi layarnya
             
             tl.tweenTo(`step${currentStep}`, {
-              ease: "power2.inOut",
+              ease: "power3.out",
               onComplete: () => { isAnimating = false; }
             });
           } 
@@ -182,7 +182,7 @@ export default function WeddingPage() {
             currentStep--;
             isAnimating = true;
             tl.tweenTo(`step${currentStep}`, {
-              ease: "power2.inOut",
+              ease: "power3.out",
               onComplete: () => {
                 isAnimating = false;
                 if (currentStep === 0) gsap.to(".scroll-indicator", { opacity: 1, duration: 0.5 });
@@ -198,9 +198,9 @@ export default function WeddingPage() {
         if (currentStep < maxStep || (currentStep === maxStep && window.scrollY <= 10 && e.deltaY < 0)) {
           if (currentStep < maxStep && e.cancelable) e.preventDefault(); 
           
-          if (e.deltaY > 30) {
+          if (e.deltaY > 15) { // ✨ Turunkan batas agar trackpad/mouse lebih sensitif
             changeStep("next");
-          } else if (e.deltaY < -30) {
+          } else if (e.deltaY < -15) {
             changeStep("prev");
           }
         }
@@ -227,7 +227,7 @@ export default function WeddingPage() {
           }
 
           // Jarak toleransi agar jari goyang sedikit tidak langsung lompat scene
-          if (Math.abs(deltaY) > 40) { 
+          if (Math.abs(deltaY) > 20) {  // ✨ Turunkan batas gesekan jari di HP
             if (deltaY > 0) {
               changeStep("next");
             } else {
