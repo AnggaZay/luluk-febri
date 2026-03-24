@@ -41,6 +41,24 @@ export default function DashboardPage() {
 
     if (isAuthenticated) {
       fetchData();
+
+      // ✨ FITUR REALTIME STREAMING: Dengerin perubahan di tabel guestbook
+      const channel = supabase
+        .channel('realtime-guestbook')
+        .on(
+          'postgres_changes', 
+          { event: 'INSERT', schema: 'public', table: 'guestbook' }, 
+          (payload) => {
+            // Tiap ada yang ngisi form, otomatis masukin ke deretan teratas data di layar
+            setGuestData((currentData) => [payload.new as GuestData, ...currentData]);
+          }
+        )
+        .subscribe();
+
+      // Bersihin channel pas keluar brankas biar gak bocor memory
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [isAuthenticated]);
 
