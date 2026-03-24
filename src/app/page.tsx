@@ -435,7 +435,7 @@ export default function WeddingPage() {
           {/* Mengendap di bawah layar, aman dari tap user berkat pointer-events-none, bergradasi, dan hilang di cover (karena ada dalam isStarted) */}
           <div className="scroll-indicator fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent z-[100] flex flex-col items-center justify-end pb-6 pointer-events-none">
             <motion.div
-              animate={{ y: [0, 8, 0] }}
+              animate={{ y: [0, -8, 0] }} // ✨ Animasinya diubah biar membal ke ATAS
               transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
               className="flex flex-col items-center gap-2"
             >
@@ -443,7 +443,7 @@ export default function WeddingPage() {
                 Swipe up untuk terus menerima informasi
               </span>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/90 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19V5M5 12l7-7 7 7" /> {/* ✨ Path diubah jadi panah ke atas */}
               </svg>
             </motion.div>
           </div>

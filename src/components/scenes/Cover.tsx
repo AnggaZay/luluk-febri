@@ -91,7 +91,8 @@ export default function Cover({ data, onOpen }: CoverProps) {
         className="absolute bottom-10 text-stone-500 flex flex-col items-center gap-3"
       >
         <span className="text-[9px] uppercase tracking-[0.3em]">Swipe up to Enter</span>
-        <div className="w-[1px] h-10 bg-gradient-to-b from-stone-500 to-transparent" />
+        {/* ✨ Diubah jadi gradient-to-t supaya visual garisnya 'meluncur' ke atas */}
+        <div className="w-[1px] h-10 bg-gradient-to-t from-stone-500 to-transparent" />
       </motion.div>
 
     </div>
