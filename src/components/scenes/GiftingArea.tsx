@@ -44,7 +44,7 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
           <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex justify-between items-center relative">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <img src="/dana-logo.svg" alt="DANA" width={40} height={14} className="object-contain" />
+                <img src="/images/dana-logo.svg" alt="DANA" width={40} height={14} className="object-contain" />
                 <p className="text-[9px] font-bold text-amber-800 uppercase tracking-tighter">- {data.groom.shortName}</p>
               </div>
               <p className="text-sm font-mono font-bold text-stone-800">{data.groom.dana}</p>
@@ -68,7 +68,7 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
           <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex justify-between items-center relative">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <img src="/dana-logo.svg" alt="DANA" width={40} height={14} className="object-contain" />
+                <img src="/images/dana-logo.svg" alt="DANA" width={40} height={14} className="object-contain" />
                 <p className="text-[9px] font-bold text-amber-800 uppercase tracking-tighter">- {data.bride.shortName}</p>
               </div>
               <p className="text-sm font-mono font-bold text-stone-800">{data.bride.dana}</p>
