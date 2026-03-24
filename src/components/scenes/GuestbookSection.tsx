@@ -25,7 +25,8 @@ export default function GuestbookSection() {
         {
           nama: formData.nama,
           kehadiran: formData.kehadiran,
-          jumlah_tamu: parseInt(formData.jumlahTamu),
+          // ✨ Jaga-jaga kalau parseInt gagal karena input aneh, kita set default 0
+          jumlah_tamu: parseInt(formData.jumlahTamu) || 0, 
           ucapan: formData.ucapan
         }
       ]);
@@ -33,7 +34,8 @@ export default function GuestbookSection() {
     setIsSubmitting(false);
 
     if (error) {
-      alert("Gagal mengirim ucapan, silakan coba lagi.");
+      // ✨ TAMPILKAN ERROR ASLI DARI SUPABASE DI ALERT
+      alert(`Gagal: ${error.message || "Unknown error"}`);
       console.error("Supabase Error:", error);
     } else {
       alert("Terima kasih atas ucapan & doanya!");
