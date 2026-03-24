@@ -27,16 +27,22 @@ export default function WeddingPage() {
   const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!isStarted) return;
+    // 1. KUNCI SCROLL RESTORATION: Cegah browser lompat ke posisi scroll bawah saat di-refresh
+    if (typeof window !== "undefined") {
+      window.history.scrollRestoration = "manual";
+    }
 
-    // 1. KUNCI SCROLL: Mencegah bug karena browser mengingat posisi scroll terakhir
+    // 2. KUNCI LAYAR COVER: Mencegah tamu curi-curi scroll sebelum tombol dibuka
+    if (!isStarted) {
+      document.body.style.overflow = "hidden";
+      return;
+    }
+
+    // Buka kunci saat animasi masuk
+    document.body.style.overflow = "auto";
     window.scrollTo(0, 0);
-    
-    let ctx: gsap.Context;
 
-    // 2. DELAY RENDER: Beri jeda 100ms agar Next.js 100% selesai melukis DOM di Production
-    const timer = setTimeout(() => {
-      ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       
       // MASTER TIMELINE
       const tl = gsap.timeline({
@@ -266,19 +272,21 @@ export default function WeddingPage() {
       // Transisi diserahkan ke natural scroll yang warnanya sama-sama putih.
       // Tidak akan ada lagi white space nyangkut atau glitch scrollbar!
 
-      // Refresh ScrollTrigger setelah exit animation Framer Motion selesai (1.5s)
+      // ✨ SINKRONISASI GSAP CHILDS: Ini WAJIB!
+      // Karena MobileJourney (Child) merender lebih dulu, kita paksa GSAP menyortir ulang
+      // posisinya setelah Parent membuat pin (padding 7500px).
+      ScrollTrigger.sort();
+      ScrollTrigger.refresh();
+
+      // Jaga-jaga: Refresh sekali lagi setelah animasi Cover hilang total dan gambar termuat
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, 1500);
 
     // ✨ BUG FIXED: Scope diubah ke mainRef agar GSAP bisa nyeleksi elemen di seluruh halaman
     }, mainRef); 
-    }, 100); // Akhir dari setTimeout
 
-    return () => {
-      clearTimeout(timer);
-      if (ctx) ctx.revert();
-    };
+    return () => ctx.revert();
   }, [isStarted]);
 
   return (
