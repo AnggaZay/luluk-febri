@@ -1,19 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { WeddingData } from '@/data/invitation';
 import { Parisienne } from 'next/font/google';
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 const parisienne = Parisienne({ subsets: ['latin'], weight: ['400'] });
 
 export default function MobileJourney({ data }: { data: typeof WeddingData }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
@@ -45,10 +49,8 @@ export default function MobileJourney({ data }: { data: typeof WeddingData }) {
           `step${i}`
         );
       }
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+      
+  }, { scope: containerRef }); // ✨ Scope dimasukkan ke konfigurasi useGSAP
 
   return (
     <div ref={containerRef} className="relative h-[100dvh] w-full bg-[#fdfbf7] flex flex-col overflow-hidden">
