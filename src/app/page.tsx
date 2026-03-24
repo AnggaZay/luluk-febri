@@ -268,6 +268,9 @@ export default function WeddingPage() {
         duration: 0.8 // ✨ DIPERCEPAT
       }, "cloudyFade");
 
+      // ✨ FADE OUT TOTAL: Menyembunyikan seluruh scene setelah awan putih, agar layer di bawahnya (Gallery dkk) terekspos buat di-klik!
+      tl.to(".visual-rooms-content", { autoAlpha: 0, duration: 0.1 });
+
       // ✨ ALUR 7 DIHAPUS SEPENUHNYA!
       // Transisi diserahkan ke natural scroll yang warnanya sama-sama putih.
       // Tidak akan ada lagi white space nyangkut atau glitch scrollbar!
@@ -303,8 +306,8 @@ export default function WeddingPage() {
         </div>
       </div>
 
-      {/* ✨ BUG FIXED: overflow-x-hidden DIHAPUS karena merusak kalkulasi PIN GSAP di Mobile Browser! */}
-      <main ref={mainRef} className="relative bg-[#d6d3d1] w-full min-h-screen block md:hidden">
+      {/* ✨ KUNCI ANTI CRASH: main biarkan normal, jangan dikasih display:none agar GSAP tidak error ketika dibuka di Desktop! */}
+      <main ref={mainRef} className="relative bg-[#d6d3d1] w-full min-h-screen">
       
       <AnimatePresence>
         {!isStarted && (
@@ -321,8 +324,10 @@ export default function WeddingPage() {
 
       {isStarted && (
         <>
-          {/* CONTAINER UTAMA YANG DI-PIN */}
-          <div ref={visualRoomsRef} className="relative h-[100dvh] w-full overflow-hidden z-10">
+          {/* ✨ TEKNIK PIN 0-HEIGHT: Bikin kontainer utama h-0 & z-50. 
+              Ini bikin layar di bawahnya menyusup naik DI BELAKANG layar ini secara rahasia, jadi nggak ada tabrakan CSS! */}
+          <div ref={visualRoomsRef} className="relative w-full h-0 z-50">
+            <div className="visual-rooms-content absolute top-0 left-0 w-full h-[100dvh] overflow-hidden bg-[#d6d3d1]">
   
   {/* --- BACKGROUND TEMBOK WITH PARALLAX --- */}
   <div className="absolute inset-0 z-0 overflow-hidden">
@@ -394,11 +399,11 @@ export default function WeddingPage() {
 
             {/* OVERLAY AWAN PUTIH (Buat transisi nyambung ke layout normal di bawah) */}
             <div className="white-cloud-overlay absolute inset-0 z-[60] bg-white opacity-0 pointer-events-none" />
+            </div>
           </div>
 
-          {/* ✨ SCREEN 6: NORMAL SCROLL FLOW (Gallery, Story, Gifting, Guestbook) */}
-          {/* ✨ SOLUSI WHITE SPACE: -mt-[100dvh] akan memposisikan area ini tepat di bawah pandangan saat pin GSAP selesai! */}
-          <div className="relative z-[50] w-full bg-white -mt-[100dvh]">
+          {/* ✨ LAYAR BAWAH (GALLERY DKK): Posisinya natural, z-10 agar sembunyi di balik awan putih, nggak perlu -mt-[100dvh] lagi! */}
+          <div className="relative z-10 w-full bg-white">
             
             {/* ✨ DESKTOP ONLY: Tampilan Gallery & Story Normal */}
             <div className="hidden md:flex w-full flex-col items-center pt-20 pb-10 bg-white">
