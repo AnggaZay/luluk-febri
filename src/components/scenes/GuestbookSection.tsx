@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function GuestbookSection() {
   const [formData, setFormData] = useState({
     nama: '',
     ucapan: '',
-    kehadiran: ''
+    kehadiran: '',
+    jumlahTamu: '1' // Default 1 orang
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -18,7 +19,7 @@ export default function GuestbookSection() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto py-20 px-4 flex flex-col items-center">
+    <div className="w-full max-w-md mx-auto pt-4 pb-12 px-4 flex flex-col items-center">
       
       {/* 1. HEADER MINIMALIS */}
       <motion.div 
@@ -64,7 +65,6 @@ export default function GuestbookSection() {
             >
               <option value="">Pilih Kehadiran</option>
               <option value="hadir">Hadir</option>
-              <option value="ragu">Masih Ragu</option>
               <option value="tidak_hadir">Tidak Hadir</option>
             </select>
             {/* Custom Arrow Icon */}
@@ -75,6 +75,36 @@ export default function GuestbookSection() {
             </div>
           </div>
         </div>
+
+        {/* ✨ KONDISIONAL: Opsi Jumlah Tamu akan pop-up jika memilih Hadir */}
+        <AnimatePresence>
+          {formData.kehadiran === 'hadir' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="space-y-2 overflow-hidden"
+            >
+              <label className="text-[10px] uppercase tracking-widest text-stone-400 ml-1">Jumlah Kehadiran</label>
+              <div className="relative">
+                <select 
+                  required
+                  className="w-full p-4 bg-stone-50 border border-stone-100 rounded-xl text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-stone-300 transition-all text-stone-700"
+                  onChange={(e) => setFormData({...formData, jumlahTamu: e.target.value})}
+                  value={formData.jumlahTamu}
+                >
+                  <option value="1">1 Orang</option>
+                  <option value="2">2 Orang (Berpasangan)</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Textarea Ucapan */}
         <div className="space-y-2">
@@ -97,12 +127,6 @@ export default function GuestbookSection() {
         </button>
       </motion.form>
 
-      {/* 3. FOOTER LOGO / OUTRO */}
-      <div className="mt-24 text-center opacity-30">
-        <p className="font-serif italic text-lg text-stone-800">Luluk & Dwi</p>
-        <p className="text-[8px] uppercase tracking-[0.4em] mt-2">01 April 2026</p>
-      </div>
-      
     </div>
   );
 }

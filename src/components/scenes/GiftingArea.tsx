@@ -18,22 +18,14 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
   };
 
   return (
-    <div className="relative flex-shrink-0 w-screen h-[100dvh] flex flex-col items-center justify-center px-8 overflow-hidden">
-      
-      {/* 1. VISUAL DEKORASI KADO (Background Hint) */}
-      <div className="absolute inset-x-0 bottom-10 flex justify-around opacity-30 grayscale pointer-events-none">
-        {/* Simulasi siluet kado/box dari foto storyboard */}
-        <div className="w-20 h-24 bg-stone-400 rotate-12 rounded-sm" />
-        <div className="w-16 h-16 bg-stone-500 -rotate-6 rounded-sm mt-10" />
-      </div>
-
-      {/* 2. CARD GIFTING (The Main Content) */}
-      <motion.div 
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="relative z-20 w-full max-w-[320px] bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-[20px_20px_60px_rgba(0,0,0,0.1)] border border-white"
-      >
+    // ✨ ANIMASI DIKEMBALIKAN: Membal otomatis dengan Framer Motion saat area ini di-scroll
+    <motion.div 
+      initial={{ scale: 0.5, opacity: 0 }}
+      whileInView={{ scale: 1, opacity: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }} // Efek membal bouncy
+      className="w-[320px] max-w-[90vw] bg-white border border-stone-100 p-6 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.06)]"
+    >
         <div className="text-center mb-8">
           <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,8 +90,6 @@ export default function GiftingArea({ data }: GiftingAreaProps) {
             Ds. Werdi, Dk. Werdi Tengah RT 13/ RW 06, Kec. Wonokerto
           </p>
         </div>
-      </motion.div>
-
-    </div>
+    </motion.div>
   );
 }

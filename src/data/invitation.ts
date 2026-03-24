@@ -1,6 +1,7 @@
 // src/data/invitation.ts
 
 export const WeddingData = {
+  coverPhoto: "/images/cover.webp", // ✨ Foto cover (rekomendasi 1080x1920 pixel, rasio 9:16)
   bride: {
     fullName: "Luluk Khorifatul Khofiyah",
     shortName: "Luluk",
@@ -11,7 +12,7 @@ export const WeddingData = {
   },
   groom: {
     fullName: "Dwi Febriyanto",
-    shortName: "Dwi",
+    shortName: "Febri",
     parents: "Putra Bpk. Darnoto & Ibu Munirah",
     address: "Tratebang, Wonokerto",
     photo: "/images/groom.png", // Path ke public/images
@@ -56,13 +57,15 @@ export const WeddingData = {
       content: "Akhirnya kapal kami segera berlayar. Terima kasih kepada keluarga dan teman-teman yang telah menjadi saksi perjalanan cinta kami. Semoga kami dapat membawa kapal ini terus berlayar dan berlabuh di tujuan yang sama.",
     }
   ],
-  gallery: [
-    "/images/prewed-1.jpg",
-    "/images/prewed-2.jpg",
-    "/images/prewed-3.jpg",
-    "/images/prewed-4.jpg",
-    "/images/prewed-5.jpg",
-    // Tambahin sampe 10 pcs sesuai aset lo
+    gallery: [
+    "/images/prewed-1.webp",
+    "/images/prewed-2.webp",
+    "/images/prewed-3.webp",
+    "/images/prewed-4.webp",
+    "/images/prewed-5.webp",
+    "/images/prewed-6.webp",
+    "/images/prewed-7.webp",
+    "/images/prewed-8.webp",
   ]
 };
 

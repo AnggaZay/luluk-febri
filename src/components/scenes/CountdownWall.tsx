@@ -4,11 +4,17 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { WeddingData } from '@/data/invitation';
-import { Orbitron } from 'next/font/google';
+import { Orbitron, Parisienne } from 'next/font/google';
+
 const orbitron = Orbitron({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-orbitron',
+});
+
+const parisienne = Parisienne({
+  subsets: ['latin'],
+  weight: ['400'], // Parisienne cuma punya weight 400
 });
 
 export default function CountdownWall({ data }: { data: typeof WeddingData }) {
@@ -33,7 +39,8 @@ export default function CountdownWall({ data }: { data: typeof WeddingData }) {
   }, [data.events.akad.date]);
 
   return (
-    <div className="relative flex flex-col items-center gap-4 w-full">
+    <div className="relative flex flex-col items-center gap-4 w-full -translate-y-8 md:-translate-y-24">
+      {/* ✨ CUSTOM POSISI: -translate-y-16 menarik seluruh blok kalender ke atas agar area bawah lega */}
       
       {/* 1. KALENDER */}
       <motion.div 
@@ -52,9 +59,8 @@ export default function CountdownWall({ data }: { data: typeof WeddingData }) {
       </motion.div>
 
       {/* 2. JAM DIGITAL */}
-{/* 2. JAM DIGITAL */}
-{/* Beri font variable Orbitron di container jam */}
-<div className={`relative w-[340px] h-[110px] mt-6 ${orbitron.variable}`}>
+      {/* Beri font variable Orbitron di container jam */}
+      <div className={`relative z-20 w-[340px] h-[110px] mt-1 ${orbitron.variable}`}>
   
   {/* Frame Jam (PNG lo) */}
   <Image 
@@ -85,6 +91,19 @@ export default function CountdownWall({ data }: { data: typeof WeddingData }) {
   {/* Efek Glow Merah di belakang Jam (Mantul ke Tembok) */}
   <div className="absolute inset-x-12 top-1/2 -translate-y-1/2 h-8 bg-red-600/20 blur-[40px] z-0 rounded-full" />
 </div>
+
+      {/* 3. SAVE THE DATE TEXT */}
+      <motion.div 
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+        // ✨ Panggil class font Parisienne langsung di wrapper-nya
+        className={`relative z-30 -mt-10 flex items-center justify-center gap-3 drop-shadow-lg ${parisienne.className}`}
+      >
+        <span className="text-6xl text-stone-100">Save</span>
+        <span className="text-5xl text-red-600 mt-4">the</span>
+        <span className="text-6xl text-stone-100">Date</span>
+      </motion.div>
 
     </div>
   );

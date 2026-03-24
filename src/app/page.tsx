@@ -11,7 +11,9 @@ import Cover from '@/components/scenes/Cover';
 import CountdownWall from '@/components/scenes/CountdownWall';
 import ProfileTable from '@/components/scenes/ProfileTable';
 import EventBook from '@/components/scenes/EventBook';
-import ShelfDecor from '@/components/scenes/ShelfDecor';
+import GallerySection from '@/components/scenes/GallerySection';
+import Story from '@/components/Story';
+import MobileJourney from '@/components/scenes/MobileJourney';
 import GiftingArea from '@/components/scenes/GiftingArea';
 import GuestbookSection from '@/components/scenes/GuestbookSection';
 
@@ -22,6 +24,7 @@ if (typeof window !== "undefined") {
 export default function WeddingPage() {
   const [isStarted, setIsStarted] = useState(false);
   const visualRoomsRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!isStarted) return;
@@ -33,9 +36,9 @@ export default function WeddingPage() {
         scrollTrigger: {
           trigger: visualRoomsRef.current,
           start: "top top",
-          end: "+=4000", // ✨ DIPENDEKKAN: Karena sekarang cuma geser 1 kali (ke Wanita)
+          end: "+=7500", // ✨ DIPERPANJANG DRASTIS: Untuk ngakomodasi manuver kamera "Zoom Ekstrem" sebelum awan putih
           pin: true,     // Tahan layar
-          scrub: 1,      // Animasi ikutin jempol
+          scrub: 1.5,    // ✨ SMOOTHING: Diperbesar jadi 1.5 agar pergerakan semua aset lebih buttery/lembut
           anticipatePin: 1,
         }
       });
@@ -101,28 +104,36 @@ export default function WeddingPage() {
         "-=1.2" // Disusul bingkai dengan efek lensa fokus
       );
 
+      // ALUR 2d: TEKS INFO MEMPELAI PUTRA
+      // Teks dari pojok kiri atas masuk dengan efek blur menyusul bingkai
+      tl.fromTo(".groom-info-item",
+        { opacity: 0, x: "-10vw", filter: "blur(10px)" },
+        { opacity: 1, x: 0, filter: "blur(0px)", ease: "power3.out", duration: 1.5 },
+        "-=1.0" // Teks muncul tak lama setelah bingkai fotonya mulai terlihat
+      );
+
       // ALUR 3: GESER MEJA HORIZONTAL
       tl.to(".table-items-wrapper", {
         xPercent: -50, // Diubah jadi -50 karena sekarang mejanya dipotong cuma jadi 2 layar
         ease: "none",
-        duration: 4    // ✨ DIPERCEPAT: Biar gak kerasa kelamaan scrollnya
+        duration: 3    // ✨ DIPERCEPAT LAGI
       });
 
       // Geser background meja bebarengan dengan barang di atas meja (simbol "<")
       tl.to(".single-table-bg", {
         xPercent: -105, // ✨ NILAI TENGAH: Biar parallax-nya pas, gak kelebihan & gak kepotong!
         ease: "none",
-        duration: 4    // ✨ Harus sama dengan durasi wrapper di atas
+        duration: 3    // Harus sama dengan yang di atas
       }, "<");
 
       // ALUR 4: EXIT SCENE (Semua di atas meja mengecil, slide ke kanan bawah, blur & fade)
       tl.addLabel("tableExit");
       
-      // 1. Animasi bungkus barang (Dikunci ke titik tengah Mempelai Putri)
+      // 1. Animasi bungkus barang (Keluar ke Kiri Atas)
       tl.to(".table-items-wrapper", {
         scale: 0.5,
-        x: "30vw",
-        y: "20vh",
+        x: "-30vw",
+        y: "-30vh",
         opacity: 0,
         filter: "blur(20px)",
         transformOrigin: "75% center", // Fokus sinkron
@@ -130,11 +141,11 @@ export default function WeddingPage() {
         duration: 1
       }, "tableExit");
 
-      // 2. Animasi background meja (Dikunci ke koordinat yang sama persis biar gak tarik-tarikan pisah)
+      // 2. Animasi background meja (Keluar ke Kiri Atas)
       tl.to(".single-table-bg", {
         scale: 0.5,
-        x: "30vw",
-        y: "20vh",
+        x: "-30vw",
+        y: "-30vh",
         opacity: 0,
         filter: "blur(20px)",
         transformOrigin: "95% center", // Koordinat absolut diimbangi dengan geseran -45%
@@ -142,18 +153,139 @@ export default function WeddingPage() {
         duration: 1
       }, "tableExit");
 
+      // ALUR 5: EVENT BOOK MASUK
+      // ✨ DIPERCEPAT: Hanya telat 0.2 detik dari dimulainya animasi meja keluar
+      tl.addLabel("eventEnter", "tableExit+=0.2"); 
+
+      // Munculkan container event-scene
+      tl.to(".event-scene", { opacity: 1, duration: 0.1 }, "eventEnter");
+
+      // ✨ ZOOM OUT BACKGROUND: Efek kamera menjauh (dari 1.5x ke 1x)
+      tl.to(".wall-bg-texture", {
+        scale: 1,
+        ease: "power2.inOut",
+        duration: 1.5
+      }, "eventEnter");
+
+      // ✨ TANPA OPACITY: Hanya main Blur, Zoom (Scale), dan Sliding!
+      
+      // 1. Lantai (Khusus Lantai kembali slide dari Bawah ke Atas)
+      tl.fromTo(".event-lantai",
+        { y: "50vh", scale: 1.5, filter: "blur(20px)" },
+        { y: 0, scale: 1, filter: "blur(0px)", ease: "power2.out", duration: 1.5 },
+        "eventEnter"
+      );
+
+      // 2. Papan (Slide dari Pojok Kanan Bawah)
+      tl.fromTo(".event-papan",
+        // ✨ transformOrigin: "center 25%" memastikan papan mengunci titik atasnya, lalu mengembang/ngezoom ke arah bawah
+        { x: "60vw", y: "40vh", scale: 1.8, filter: "blur(20px)", transformOrigin: "center 25%" },
+        { x: 0, y: 0, scale: 1, filter: "blur(0px)", transformOrigin: "center 25%", ease: "power3.out", duration: 1.5 },
+        "eventEnter+=0.2" // Masuk 0.2 detik setelah lantai
+      );
+
+      // 3. Bunga Berdiri (Slide dari Pojok Kanan Bawah)
+      tl.fromTo(".event-bunga-berdiri",
+        { x: "70vw", y: "50vh", scale: 1.6, filter: "blur(20px)" },
+        { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 },
+        "eventEnter+=0.3" // Menyusul papan
+      );
+
+      // 4. Bunga Lantai (Slide dari Pojok Kanan Bawah)
+      tl.fromTo(".event-bunga-lantai",
+        { x: "80vw", y: "60vh", scale: 1.7, filter: "blur(20px)" },
+        { x: 0, y: 0, scale: 1, filter: "blur(0px)", ease: "power3.out", duration: 1.5 },
+        "eventEnter+=0.4" // Masuk paling akhir
+      );
+
+      // Beri jeda sejenak untuk memandangi komposisi utuh
+      tl.to({}, { duration: 0.3 }); 
+
+      // ✨ ALUR 5b: ZOOM IN EKSTREM (READING MODE)
+      tl.addLabel("eventZoom");
+
+      // 1. Tembok (Zoom lambat untuk efek parallax kedalaman)
+      tl.to(".wall-bg-texture", { scale: 1.2, ease: "power2.inOut", duration: 2.5 }, "eventZoom");
+
+      // 2. Bunga Berdiri (Zoom, Geser menjauh ke kiri, Ngeblur tipis-tipis)
+      tl.to(".event-bunga-berdiri", {
+        scale: 2, x: "-25vw", y: "10vh", filter: "blur(5px)",
+        ease: "power2.inOut", duration: 2.5
+      }, "eventZoom");
+
+      // 3. Bunga Lantai & Lantai (Zoom, Turun merosot ke bawah, Perlahan Menghilang)
+      tl.to([".event-bunga-lantai", ".event-lantai"], {
+        scale: 1.5, y: "30vh", opacity: 0,
+        ease: "power2.inOut", duration: 2.5
+      }, "eventZoom");
+
+      // 4. Papan (Zoom ekstrem 2.8x! Karena origin di "center 25%", ia akan mekar ke bawah layarnya)
+      tl.to(".event-papan", {
+        scale: 1.8, // ✨ DIKURANGI: Agar final zoom tidak terlalu dekat/nempel ke layar
+        // y: "-10vh", // (Opsional) Uncomment ini jika teks dirasa kurang naik
+        ease: "power2.inOut", 
+        duration: 2.5
+      }, "eventZoom");
+
+      // Jeda scroll panjang biar tamu bisa dengan santai membaca teks yang udah super jumbo
+      // dan menekan tombol Google Maps sebelum tertutup awan putih
+      tl.to({}, { duration: 0.3 }); // ✨ DIPERSINGKAT: Jeda sebelum masuk ke awan putih tidak lagi terlalu lama
+
+      // ALUR 6: FADE BERAWAN (WHITEOUT & BLUR) Menuju Layout Normal
+      tl.addLabel("cloudyFade");
+
+      // Overlay putih akan menebal menutupi layar
+      tl.to(".white-cloud-overlay", {
+        opacity: 1,
+        ease: "power2.inOut",
+        duration: 0.8 // ✨ DIPERCEPAT: Awan menutupi layar dengan lebih gesit
+      }, "cloudyFade");
+
+      // ✨ HILANGKAN REDUP HITAM: Fade out efek vignette di tembok
+      tl.to(".wall-bg-vignette", {
+        opacity: 0,
+        duration: 0.8 // ✨ DIPERCEPAT
+      }, "cloudyFade");
+
+      // Background dkk meneruskan zoom-nya (+=0.2) sambil menghilang dibalik awan
+      tl.to([".event-scene", ".wall-bg-texture"], {
+        filter: "blur(30px)", 
+        scale: "+=0.2", // ✨ Diubah jadi +=0.2 agar meneruskan zoom terakhir secara dinamis
+        opacity: 0,
+        duration: 0.8 // ✨ DIPERCEPAT
+      }, "cloudyFade");
+
+      // ✨ ALUR 7 DIHAPUS SEPENUHNYA!
+      // Transisi diserahkan ke natural scroll yang warnanya sama-sama putih.
+      // Tidak akan ada lagi white space nyangkut atau glitch scrollbar!
+
       // Refresh ScrollTrigger setelah exit animation Framer Motion selesai (1.5s)
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, 1500);
 
-    }, visualRoomsRef);
+    // ✨ BUG FIXED: Scope diubah ke mainRef agar GSAP bisa nyeleksi elemen di seluruh halaman
+    }, mainRef); 
 
     return () => ctx.revert();
   }, [isStarted]);
 
   return (
-    <main className="relative bg-[#d6d3d1] w-full min-h-screen overflow-x-hidden">
+    <>
+      {/* ✨ POINT 2: DESKTOP FALLBACK (Hanya muncul di layar PC/Tablet besar) */}
+      <div className="hidden md:flex fixed inset-0 z-[9999] bg-stone-900 flex-col items-center justify-center text-center px-8">
+        <h2 className="text-3xl font-serif text-stone-100 mb-4">Akses Terbatas</h2>
+        <p className="text-stone-400 mb-8 max-w-md leading-relaxed">
+          Undangan ini hanya bisa diakses melalui perangkat <strong className="text-stone-200">Mobile / Smartphone / Handphone</strong>.<br/> Silakan scan QR Code di bawah ini untuk membuka melalui HP Anda.
+        </p>
+        <div className="w-56 h-56 bg-white rounded-2xl flex items-center justify-center p-4 shadow-2xl relative">
+          {/* Pastikan lo nyiapin file qr-code.webp di folder public/images */}
+          <Image src="/images/qr-code.webp" alt="QR Code" fill className="object-contain p-2" />
+        </div>
+      </div>
+
+      {/* ✨ KONTEN UTAMA: Dibatasi lewat class "block md:hidden" agar tidak merender di Desktop */}
+      <main ref={mainRef} className="relative bg-[#d6d3d1] w-full min-h-screen overflow-x-hidden block md:hidden">
       
       <AnimatePresence>
         {!isStarted && (
@@ -238,25 +370,73 @@ export default function WeddingPage() {
               </div>
             </div>
 
+            {/* SCREEN 4: EVENT BOOK SCENE (Di Animasi yang sama!) */}
+            <EventBook data={WeddingData.events} />
+
+            {/* OVERLAY AWAN PUTIH (Buat transisi nyambung ke layout normal di bawah) */}
+            <div className="white-cloud-overlay absolute inset-0 z-[60] bg-white opacity-0 pointer-events-none" />
           </div>
 
-          {/* SCREEN 4: EVENT BOOK & SHELF (Muncul vertikal setelah meja mengecil) */}
-          <section className="relative z-[45] w-full min-h-screen bg-stone-200 flex items-center justify-center overflow-hidden">
-            <EventBook data={WeddingData.events} />
-            <ShelfDecor onOpenStory={() => {}} onOpenGallery={() => {}} />
-          </section>
+          {/* ✨ SCREEN 6: NORMAL SCROLL FLOW (Gallery, Story, Gifting, Guestbook) */}
+          {/* ✨ SOLUSI WHITE SPACE: -mt-[100dvh] akan memposisikan area ini tepat di bawah pandangan saat pin GSAP selesai! */}
+          <div className="relative z-[50] w-full bg-white -mt-[100dvh]">
+            
+            {/* ✨ DESKTOP ONLY: Tampilan Gallery & Story Normal */}
+            <div className="hidden md:flex w-full flex-col items-center pt-20 pb-10 bg-white">
+              <GallerySection data={WeddingData} />
+              <Story />
+            </div>
 
-          {/* SCREEN 5: GIFTING AREA */}
-          <section className="relative z-[46] w-full min-h-screen bg-stone-300 flex items-center justify-center">
-            <GiftingArea data={WeddingData} />
-          </section>
+            {/* ✨ MOBILE ONLY: Animasi Stacking Card & Gallery (1 Scroll = 1 Step) */}
+            <div className="block md:hidden w-full">
+              <MobileJourney data={WeddingData} />
+            </div>
+              
+            {/* ✨ SHARED Gifting & Guestbook (Gue kasih pb-32 ekstra agar tombol submit nggak ketutup indikator scroll di bawah!) */}
+            <div className="w-full flex flex-col items-center pt-10 pb-32 bg-white">
+              <div className="w-full flex justify-center mb-8">
+                <GiftingArea data={WeddingData} />
+              </div>
 
-          {/* SCREEN 6: GUESTBOOK */}
-          <section className="relative z-[50] w-full min-h-screen bg-white">
-            <GuestbookSection />
-          </section>
+              {/* 4. Guestbook Section */}
+              <GuestbookSection />
+              
+              {/* FOOTER LOGO / OUTRO */}
+              <div className="mt-8 mb-10 text-center opacity-40">
+                <p className="font-serif italic text-lg text-stone-800">{WeddingData.groom.shortName} & {WeddingData.bride.shortName}</p>
+                <p className="text-[8px] uppercase tracking-[0.4em] mt-2">Terima Kasih</p>
+              </div>
+
+              {/* ✨ TRADEMARK / DEVELOPER SPACE */}
+              <div className="mb-24 text-center">
+                <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-medium text-[#20636e]">
+                  Dibuat oleh <span className="font-bold tracking-[0.3em]">Helvetecha</span>
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          {/* ✨ POINT 3: PERSISTENT SCROLL INDICATOR */}
+          {/* Mengendap di bawah layar, aman dari tap user berkat pointer-events-none, bergradasi, dan hilang di cover (karena ada dalam isStarted) */}
+          <div className="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent z-[100] flex flex-col items-center justify-end pb-6 pointer-events-none">
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              className="flex flex-col items-center gap-2"
+            >
+              <span className="text-[9px] uppercase tracking-[0.2em] text-white/90 font-medium text-center px-4 drop-shadow-md">
+                Scroll untuk terus menerima informasi
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/90 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </motion.div>
+          </div>
+
         </>
       )}
-    </main>
+      </main>
+    </>
   );
 }

@@ -16,7 +16,7 @@ export default function Cover({ data, onOpen }: CoverProps) {
       {/* 1. BACKGROUND: Portrait Optimized */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/cover-portrait.jpg" // Pastikan pakai foto portrait yang estetik
+          src={data.coverPhoto} 
           alt="Wedding Cover"
           fill
           className="object-cover opacity-50 scale-110"
@@ -43,7 +43,10 @@ export default function Cover({ data, onOpen }: CoverProps) {
             <h1 className="text-5xl font-serif text-stone-100 leading-tight">
               {data.groom.shortName}
             </h1>
-            <span className="text-3xl font-light italic text-stone-500 my-2">&</span>
+            
+            {/* ✨ CUSTOM AMPERSAND: Warna merah elegan, ukuran lebih besar, font meliuk (cursive) */}
+            <span className="text-5xl font-[cursive] italic text-rose-600 my-1 drop-shadow-md">&</span>
+            
             <h1 className="text-5xl font-serif text-stone-100 leading-tight">
               {data.bride.shortName}
             </h1>
