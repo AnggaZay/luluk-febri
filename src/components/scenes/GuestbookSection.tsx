@@ -10,6 +10,8 @@ export default function GuestbookSection() {
     kehadiran: '',
     jumlahTamu: '1' // Default 1 orang
   });
+  const [showReminder, setShowReminder] = useState(false);
+  const [hasShown, setHasShown] = useState(false); // Biar cuma muncul 1x per sesi
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,10 +23,47 @@ export default function GuestbookSection() {
   return (
     <div className="w-full max-w-md mx-auto pt-4 pb-12 px-4 flex flex-col items-center">
       
+      {/* ✨ POP-UP ALERT PENGINGAT RSVP */}
+      <AnimatePresence>
+        {showReminder && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6 bg-stone-900/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white rounded-3xl p-6 md:p-8 max-w-[320px] w-full shadow-2xl border border-stone-100 text-center relative"
+            >
+              <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                💌
+              </div>
+              <h3 className="font-serif text-xl text-stone-800 mb-2">Halo Orang Baik! ✨</h3>
+              <p className="text-[11px] md:text-xs text-stone-600 mb-6 leading-relaxed px-2">
+                Mohon luangkan waktu sebentar untuk konfirmasi kehadiran yaa. Agar kami bisa menyambut kehadiranmu dengan persiapan yang terbaik! 🥰
+              </p>
+              <button
+                onClick={() => setShowReminder(false)}
+                className="w-full py-3.5 bg-amber-800 text-white rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg shadow-amber-900/20 active:scale-95 transition-all"
+              >
+                Siap, laksanakan! 🫡
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* 1. HEADER MINIMALIS */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        onViewportEnter={() => {
+          if (!hasShown) {
+            // Delay 800ms biar nggak ngagetin pas user lagi scroll
+            setTimeout(() => setShowReminder(true), 800);
+            setHasShown(true);
+          }
+        }}
         className="text-center mb-12"
       >
         <h2 className="text-3xl font-serif text-stone-900 mb-4 tracking-tight">Buku Tamu</h2>
