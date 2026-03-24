@@ -29,7 +29,14 @@ export default function WeddingPage() {
   useEffect(() => {
     if (!isStarted) return;
 
-    const ctx = gsap.context(() => {
+    // 1. KUNCI SCROLL: Mencegah bug karena browser mengingat posisi scroll terakhir
+    window.scrollTo(0, 0);
+    
+    let ctx: gsap.Context;
+
+    // 2. DELAY RENDER: Beri jeda 100ms agar Next.js 100% selesai melukis DOM di Production
+    const timer = setTimeout(() => {
+      ctx = gsap.context(() => {
       
       // MASTER TIMELINE
       const tl = gsap.timeline({
@@ -266,8 +273,12 @@ export default function WeddingPage() {
 
     // ✨ BUG FIXED: Scope diubah ke mainRef agar GSAP bisa nyeleksi elemen di seluruh halaman
     }, mainRef); 
+    }, 100); // Akhir dari setTimeout
 
-    return () => ctx.revert();
+    return () => {
+      clearTimeout(timer);
+      if (ctx) ctx.revert();
+    };
   }, [isStarted]);
 
   return (
@@ -284,8 +295,8 @@ export default function WeddingPage() {
         </div>
       </div>
 
-      {/* ✨ KONTEN UTAMA: Dibatasi lewat class "block md:hidden" agar tidak merender di Desktop */}
-      <main ref={mainRef} className="relative bg-[#d6d3d1] w-full min-h-screen overflow-x-hidden block md:hidden">
+      {/* ✨ BUG FIXED: overflow-x-hidden DIHAPUS karena merusak kalkulasi PIN GSAP di Mobile Browser! */}
+      <main ref={mainRef} className="relative bg-[#d6d3d1] w-full min-h-screen block md:hidden">
       
       <AnimatePresence>
         {!isStarted && (
