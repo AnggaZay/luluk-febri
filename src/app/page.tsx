@@ -440,7 +440,7 @@ export default function WeddingPage() {
               className="flex flex-col items-center gap-2"
             >
               <span className="text-[9px] uppercase tracking-[0.2em] text-white/90 font-medium text-center px-4 drop-shadow-md">
-                Scroll untuk terus menerima informasi
+                Swipe up untuk terus menerima informasi
               </span>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/90 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
