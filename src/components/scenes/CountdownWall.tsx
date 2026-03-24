@@ -53,7 +53,7 @@ export default function CountdownWall({ data }: { data: typeof WeddingData }) {
           src="/images/kalender.webp" // Sesuaikan extensionnya (.png/.webp)
           alt="Kalender April"
           fill
-          className="object-contain drop-shadow-[0_15px_35px_rgba(0,0,0,0.2)]"
+          className="object-contain"
           priority
         />
       </motion.div>
@@ -67,7 +67,7 @@ export default function CountdownWall({ data }: { data: typeof WeddingData }) {
     src="/images/jam-digital.webp" 
     alt="Frame Jam"
     fill
-    className="object-contain z-10 drop-shadow-[0_15px_35px_rgba(0,0,0,0.2)]"
+        className="object-contain z-10"
   />
 
   {/* Layar Angka (Teks Merah) */}

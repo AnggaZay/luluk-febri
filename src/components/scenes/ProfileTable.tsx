@@ -27,7 +27,7 @@ export default function ProfileTable({ type, data }: ProfileTableProps) {
       src={isGroom ? "/images/putra.webp" : "/images/putri.webp"}
       alt={data.fullName}
       fill
-      className="object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+      className="object-contain"
       sizes="300px"
     />
   );
@@ -47,7 +47,8 @@ export default function ProfileTable({ type, data }: ProfileTableProps) {
         }`}
       >
         {/* Label Badge dengan Frame Decorative */}
-        <div className="relative bg-stone-900/90 backdrop-blur-sm text-stone-100 text-[9px] md:text-xs uppercase tracking-[0.3em] px-4 py-1.5 mb-3 shadow-xl">
+        {/* ✨ ANTI-LAG: Hilangkan backdrop-blur, ganti ke warna pekat agar HP kentang tetap 60fps */}
+        <div className="relative bg-stone-900/95 text-stone-100 text-[9px] md:text-xs uppercase tracking-[0.3em] px-4 py-1.5 mb-3 shadow-xl">
           <span className="relative z-10">{isGroom ? "Mempelai Laki-laki" : "Mempelai Perempuan"}</span>
           {/* Garis outline offset (Efek shape menumpuk) */}
           <div className="absolute top-1 left-1 w-full h-full border border-stone-500/50 pointer-events-none" />
@@ -73,7 +74,7 @@ export default function ProfileTable({ type, data }: ProfileTableProps) {
           </p>
           
           {/* Shape Gelap Sorot Alamat */}
-          <div className="bg-stone-900/80 backdrop-blur-md px-3 py-2 rounded-sm border border-stone-700/50 shadow-lg max-w-[220px] md:max-w-xs">
+          <div className="bg-stone-900/95 px-3 py-2 rounded-sm border border-stone-700/50 shadow-lg max-w-[220px] md:max-w-xs">
             <p className="text-[9px] md:text-[11px] text-stone-300 italic font-medium leading-relaxed">
               {data.address}
             </p>

@@ -19,14 +19,15 @@ export default function EventBook({ data }: EventBookProps) {
       
       {/* Lantai */}
       <div className="event-lantai absolute bottom-[-5vh] md:bottom-[-10vh] left-0 w-full h-[35vh] md:h-[45vh] z-0">
-        <Image src="/images/lantai.webp" alt="Lantai" fill className="object-cover object-bottom drop-shadow-2xl" />
+        {/* ✨ ANTI-LAG: Menghapus drop-shadow-2xl pada gambar lantai transparan yang menutupi layar */}
+        <Image src="/images/lantai.webp" alt="Lantai" fill className="object-cover object-bottom" />
       </div>
 
       {/* WRAPPER BUNGA BERDIRI (Hanya untuk Animasi GSAP) */}
       <div className="event-bunga-berdiri absolute bottom-0 left-[-5%] md:left-[2%] w-[270px] md:w-[550px] aspect-[1/2] z-30 pointer-events-none">
         {/* ✨ CUSTOM POSISI & UKURAN: Tambahkan/ubah angka translate-y-[...] di sini untuk menurunkan bunga */}
         <div className="relative w-full h-full translate-y-[10vh] md:translate-y-[15vh]">
-          <Image src="/images/bunga-berdiri.webp" alt="Bunga Berdiri" fill className="object-contain object-bottom drop-shadow-xl" sizes="(max-width: 768px) 270px, 550px" />
+          <Image src="/images/bunga-berdiri.webp" alt="Bunga Berdiri" fill className="object-contain object-bottom" sizes="(max-width: 768px) 270px, 550px" />
         </div>
       </div>
 
@@ -34,7 +35,7 @@ export default function EventBook({ data }: EventBookProps) {
       <div className="event-bunga-lantai absolute bottom-0 left-1/2 -translate-x-1/2 w-[360px] md:w-[700px] aspect-[4/3] z-10 pointer-events-none">
         {/* ✨ CUSTOM POSISI & UKURAN: Tambahkan/ubah angka translate-y-[...] di sini untuk menurunkan bunga */}
         <div className="relative w-full h-full translate-y-[5vh] md:translate-y-[10vh]">
-          <Image src="/images/bunga-lantai.webp" alt="Bunga Lantai" fill className="object-contain object-bottom drop-shadow-xl" sizes="(max-width: 768px) 360px, 700px" />
+          <Image src="/images/bunga-lantai.webp" alt="Bunga Lantai" fill className="object-contain object-bottom" sizes="(max-width: 768px) 360px, 700px" />
         </div>
       </div>
 
@@ -43,7 +44,7 @@ export default function EventBook({ data }: EventBookProps) {
         
         {/* ✨ CUSTOM UKURAN: Naikkan max-w-[...] untuk memperbesar ukuran asli. (Tailwind mentok di scale-150. Gunakan scale-[1.8] kalau mau custom arbitrary) */}
         <div className="relative w-full max-w-[300px] md:max-w-3xl aspect-[1/1.5] md:aspect-[1.5/1] flex flex-col items-center justify-center pointer-events-auto translate-y-[0vh] md:translate-y-[10vh] scale-150 md:scale-125">
-          <Image src="/images/papan.webp" alt="Papan" fill className="object-contain drop-shadow-2xl" sizes="100vw" priority />
+          <Image src="/images/papan.webp" alt="Papan" fill className="object-contain" sizes="100vw" priority />
           
           {/* KERTAS KONTEN (Menumpang tepat di atas gambar papan) */}
           {/* ✨ KUNCI POSISI: justify-start memastikan blok mulai nempel dari atas. 

@@ -53,6 +53,15 @@ export default function WeddingPage() {
       // ✨ NEW MASTER TIMELINE: Tanpa ScrollTrigger! Dijalankan manual lewat swipe/scroll
       const tl = gsap.timeline({ paused: true });
 
+      // ✨ PERFORMANCE BOOST (ANTI-LAG HP): Paksa GPU HP untuk bersiap merender elemen ini!
+      gsap.set([
+        ".wall-scene", ".wall-bg-texture", ".wall-bg-vignette",
+        ".single-table-bg", ".table-items-wrapper", ".bunga-meja-item",
+        ".groom-photo-item", ".groom-info-item", ".bride-info-item",
+        ".event-scene", ".event-lantai", ".event-papan", ".event-bunga-berdiri", ".event-bunga-lantai",
+        ".white-cloud-overlay"
+      ], { willChange: "transform, opacity" });
+
       tl.addLabel("step0");
 
       // STEP 1: WALL MINGGAT & GROOM (Pria) MASUK
@@ -370,7 +379,7 @@ export default function WeddingPage() {
                           src="/images/bunga-meja.webp" 
                           alt="Bunga Meja" 
                           fill 
-                          className="object-contain drop-shadow-2xl" 
+                        className="object-contain" 
                           sizes="450px" 
                         />
                       </div>
