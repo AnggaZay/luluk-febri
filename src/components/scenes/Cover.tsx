@@ -35,7 +35,8 @@ export default function Cover({ data, onOpen, guestName }: CoverProps) {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-end h-full text-center pb-16 md:pb-24 px-6">
+      {/* ✨ Ubah pb-16 menjadi pb-32 (Mobile) dan md:pb-24 menjadi md:pb-40 (Laptop) agar posisinya naik */}
+      <div className="relative z-10 flex flex-col items-center justify-end h-full text-center pb-32 md:pb-40 px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
