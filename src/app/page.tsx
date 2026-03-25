@@ -286,7 +286,15 @@ function WeddingPage() {
   useEffect(() => {
     const guest = searchParams.get('to');
     if (guest) {
-      setGuestName(guest);
+      try {
+        // ✨ Coba pecahkan enkripsi (decode) Base64
+        // searchParams.get otomatis memecahkan encodeURIComponent pertama, jadi kita tinggal atob lalu decode
+        const decodedName = decodeURIComponent(atob(guest));
+        setGuestName(decodedName);
+      } catch (error) {
+        // ✨ Kalau error (berarti user buka link versi lama yang belum dienkripsi), langsung pakai teks aslinya
+        setGuestName(guest);
+      }
     }
   }, [searchParams]);
   // ✨ FUNGSI BUKA UNDANGAN & PLAY MUSIK

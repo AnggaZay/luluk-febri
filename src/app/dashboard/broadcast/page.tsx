@@ -120,8 +120,9 @@ export default function BroadcastPage() {
     let phone = guest.no_wa.replace(/\D/g, '');
     if (phone.startsWith('0')) phone = '62' + phone.substring(1);
 
-    // Generate Link Personalisasi
-    const link = `${window.location.origin}/?to=${encodeURIComponent(guest.nama)}`;
+    // Generate Link Personalisasi dengan Enkripsi (Base64)
+    const encryptedName = encodeURIComponent(btoa(encodeURIComponent(guest.nama)));
+    const link = `${window.location.origin}/?to=${encryptedName}`;
     
     // Generate Teks Pesan
     const message = `Bismillah...\n\nTanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i *${guest.nama}* untuk hadir dan memberikan doa restu pada acara pernikahan kami.\n\nDetail acara dan lokasi dapat diakses melalui tautan undangan digital berikut:\n${link}\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.\n\nTerima kasih,\n*${WeddingData.groom.shortName} & ${WeddingData.bride.shortName}*`;
