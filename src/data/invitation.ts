@@ -69,7 +69,8 @@ export const WeddingData = {
   ]
 };
 
-interface CoverProps {
+export interface CoverProps {
   data: typeof WeddingData; // Mengambil struktur langsung dari WeddingData kamu
   onOpen: () => void;
+  guestName?: string | null; // ✨ Tambahkan ini untuk nama tamu
 }

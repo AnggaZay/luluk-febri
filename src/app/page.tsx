@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -21,15 +22,27 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function WeddingPage() {
+// ✨ Karena kita butuh baca URL, kita bungkus pagenya dengan Suspense
+// Ini adalah cara standar di Next.js 13+ (App Router)
+export default function WeddingPageWrapper() {
+  return (
+    <Suspense fallback={<div className="w-screen h-screen bg-[#d6d3d1]" />}>
+      <WeddingPage />
+    </Suspense>
+  );
+}
+
+function WeddingPage() {
   const [isStarted, setIsStarted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false); // ✨ State deteksi musik nyala/mati
   const visualRoomsRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null); // ✨ Referensi untuk elemen audio
+  const [guestName, setGuestName] = useState<string | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // 1. KUNCI SCROLL RESTORATION: Cegah browser lompat ke posisi scroll bawah saat di-refresh
+    // 0. AMBIL NAMA TAMU DARI URL: Cek apakah ada parameter `?to=`
     if (typeof window !== "undefined") {
       window.history.scrollRestoration = "manual";
     }
@@ -264,9 +277,18 @@ export default function WeddingPage() {
       };
     }, mainRef.current);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    }
   }, [isStarted]);
 
+  // ✨ Ambil nama tamu dari URL saat komponen pertama kali render
+  useEffect(() => {
+    const guest = searchParams.get('to');
+    if (guest) {
+      setGuestName(guest);
+    }
+  }, [searchParams]);
   // ✨ FUNGSI BUKA UNDANGAN & PLAY MUSIK
   // Wajib dipanggil langsung dari event onClick agar browser (terutama iOS/Safari) tidak memblokir autoplay
   const handleOpenInvitation = () => {
@@ -319,7 +341,7 @@ export default function WeddingPage() {
             transition={{ duration: 0.8, ease: "easeInOut" }} // ✨ Durasi dipersingkat biar lebih responsif (gak kelamaan nunggu)
             className="fixed inset-0 z-[100] h-[100dvh] w-full"
           >
-            <Cover data={WeddingData} onOpen={handleOpenInvitation} />
+            <Cover data={WeddingData} onOpen={handleOpenInvitation} guestName={guestName} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -423,7 +445,7 @@ export default function WeddingPage() {
               </div>
 
               {/* 4. Guestbook Section */}
-              <GuestbookSection />
+              <GuestbookSection key={guestName} guestName={guestName} />
               
               {/* FOOTER LOGO / OUTRO */}
               <div className="mt-8 mb-10 text-center opacity-40">

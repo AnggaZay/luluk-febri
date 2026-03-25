@@ -1,100 +1,102 @@
 "use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { WeddingData } from '@/data/invitation';
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Cormorant_Garamond, Parisienne } from "next/font/google";
 
-interface CoverProps {
-  data: typeof WeddingData;
-  onOpen: () => void;
-}
+// ✨ Ambil tipe data dari file pusat biar konsisten
+import { CoverProps } from "@/data/invitation";
 
-export default function Cover({ data, onOpen }: CoverProps) {
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+const parisienne = Parisienne({ subsets: ["latin"], weight: ["400"] });
+
+export default function Cover({ data, onOpen, guestName }: CoverProps) {
   return (
-    <div className="relative h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden bg-stone-900">
-      
-      {/* 1. BACKGROUND: Portrait Optimized */}
-      <div className="absolute inset-0 z-0">
+    <div className="relative w-full h-full bg-stone-800 text-white overflow-hidden">
+      {/* Background Image */}
+      <motion.div
+        initial={{ scale: 1.1, opacity: 0.8 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute inset-0 z-0"
+      >
         <Image
-          src={data.coverPhoto} 
+          src={data.coverPhoto}
           alt="Wedding Cover"
           fill
-          className="object-cover opacity-50 scale-110"
+          className="object-cover"
           priority
-          sizes="100vw"
         />
-        {/* Overlay Vignette: Biar fokus ke tengah */}
-        <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-transparent to-stone-900" />
-      </div>
-
-      {/* 2. CONTENT: Elegant Typography */}
-      <div className="relative z-10 text-center px-8 w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="space-y-4"
-        >
-          <span className="uppercase tracking-[0.4em] text-[10px] text-stone-400 font-medium block">
-            The Wedding of
-          </span>
-          
-          <div className="flex flex-col items-center">
-            <h1 className="text-5xl font-serif text-stone-100 leading-tight">
-              {data.groom.shortName}
-            </h1>
-            
-            {/* ✨ CUSTOM AMPERSAND: Warna merah elegan, ukuran lebih besar, font meliuk (cursive) */}
-            <span className="text-5xl font-[cursive] italic text-rose-600 my-1 drop-shadow-md">&</span>
-            
-            <h1 className="text-5xl font-serif text-stone-100 leading-tight">
-              {data.bride.shortName}
-            </h1>
-          </div>
-
-          <div className="h-[1px] w-12 bg-stone-700 mx-auto my-6" />
-          
-          <p className="text-sm font-light tracking-[0.3em] text-stone-300">
-            01 . 04 . 2026
-          </p>
-        </motion.div>
-
-        {/* 3. INTERACTIVE BUTTON: The "Zoom Trigger" */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="mt-16"
-        >
-          <button
-            onClick={onOpen}
-            className="relative px-10 py-4 overflow-hidden rounded-full border border-stone-100/20 bg-white/5 backdrop-blur-md active:scale-90 transition-transform duration-200"
-          >
-            <span className="relative z-10 text-xs text-stone-100 font-medium tracking-[0.2em] uppercase">
-              Buka Undangan
-            </span>
-            {/* Animasi kilatan cahaya di tombol */}
-            <motion.div 
-              animate={{ x: ['-100%', '200%'] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "linear", repeatDelay: 1 }}
-              className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
-            />
-          </button>
-        </motion.div>
-      </div>
-
-      {/* 4. HINT: Scroll Indicator */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.4, 0] }}
-        transition={{ duration: 3, repeat: Infinity }}
-        className="absolute bottom-10 text-stone-500 flex flex-col items-center gap-3"
-      >
-        <span className="text-[9px] uppercase tracking-[0.3em]">Swipe up to Enter</span>
-        {/* ✨ Diubah jadi gradient-to-t supaya visual garisnya 'meluncur' ke atas */}
-        <div className="w-[1px] h-10 bg-gradient-to-t from-stone-500 to-transparent" />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/20 to-transparent" />
       </motion.div>
 
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-end h-full text-center pb-16 md:pb-24 px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+        >
+          <p
+            className={`text-sm md:text-base uppercase tracking-[0.3em] text-stone-200 mb-4 ${cormorant.className}`}
+          >
+            The Wedding Of
+          </p>
+          <h1
+            className={`text-6xl md:text-8xl text-white drop-shadow-lg ${parisienne.className}`}
+          >
+            {data.groom.shortName} & {data.bride.shortName}
+          </h1>
+        </motion.div>
+
+        {/* ✨ BLOK NAMA TAMU (HANYA MUNCUL JIKA ADA `guestName`) */}
+        {guestName && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+            className="mt-12 w-full max-w-sm"
+          >
+            <p
+              className={`text-xs md:text-sm uppercase tracking-widest text-stone-300 mb-2 ${cormorant.className}`}
+            >
+              Kepada Yth. Bapak/Ibu/Saudara/i
+            </p>
+            <p
+              className={`text-2xl md:text-3xl font-semibold text-white drop-shadow-md ${cormorant.className}`}
+            >
+              {guestName}
+            </p>
+          </motion.div>
+        )}
+
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.2 }}
+          onClick={onOpen}
+          className="mt-12 group flex items-center gap-3 bg-white/90 text-stone-800 px-8 py-4 rounded-full shadow-2xl backdrop-blur-sm border border-white/20 hover:bg-white active:scale-95 transition-all"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 group-hover:text-rose-500 transition-colors"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM2 10a8 8 0 1116 0 8 8 0 01-16 0z" />
+            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+          <span
+            className={`text-xs font-bold uppercase tracking-[0.2em] ${cormorant.className}`}
+          >
+            Buka Undangan
+          </span>
+        </motion.button>
+      </div>
     </div>
   );
 }

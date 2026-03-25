@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 
-export default function GuestbookSection() {
-  const [formData, setFormData] = useState({
-    nama: '',
+// ✨ Kita buatkan Interface khusus agar TypeScript paham persis isi state form-nya
+interface FormDataState {
+  nama: string;
+  ucapan: string;
+  kehadiran: string;
+  jumlahTamu: string;
+}
+
+// ✨ Bikin guestName opsional (?) agar komponen tidak error jika dipanggil kosongan di halaman lain
+export default function GuestbookSection({ guestName }: { guestName?: string | null }) {
+  const [formData, setFormData] = useState<FormDataState>({
+    nama: guestName || '', // ✨ Langsung inisialisasi dari awal (Aman & Lebih Cepat)
     ucapan: '',
     kehadiran: '',
     jumlahTamu: '1' // Default 1 orang
@@ -40,7 +49,13 @@ export default function GuestbookSection() {
       console.error("Supabase Error:", error);
     } else {
       setShowSuccess(true); // ✨ Tampilkan pop-up sukses custom
-      setFormData({ nama: '', ucapan: '', kehadiran: '', jumlahTamu: '1' });
+      // ✨ Reset form, tapi JANGAN hapus nama tamu jika datang dari URL
+      setFormData({
+        nama: guestName || '',
+        ucapan: '',
+        kehadiran: '',
+        jumlahTamu: '1'
+      });
     }
   };
 
