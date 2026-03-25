@@ -69,7 +69,8 @@ export default function BroadcastPage() {
       setLinksData([data[0], ...linksData]);
       setNewGuest({ nama: "", noWa: "" });
     } else {
-      alert("Gagal menyimpan data tamu.");
+      console.error("Supabase Error Insert:", error);
+      alert(`Gagal menyimpan data tamu: ${error?.message || "Cek console untuk detail"}`);
     }
     setIsAdding(false);
   };
