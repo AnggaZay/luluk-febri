@@ -9,12 +9,21 @@ import { WeddingData } from "@/data/invitation";
 
 const parisienne = Parisienne({ subsets: ['latin'], weight: ['400'] });
 
+// ✨ Tipe data untuk memastikan semua properti (nama, no_wa, dll) konsisten
+interface InvitationLink {
+  id: string;
+  created_at: string;
+  nama: string;
+  no_wa: string;
+  is_sent: boolean;
+}
+
 export default function BroadcastPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
 
-  const [linksData, setLinksData] = useState<any[]>([]);
+  const [linksData, setLinksData] = useState<InvitationLink[]>([]);
   const [newGuest, setNewGuest] = useState({ nama: "", noWa: "" });
   const [isAdding, setIsAdding] = useState(false);
 
@@ -65,7 +74,7 @@ export default function BroadcastPage() {
     setIsAdding(false);
   };
 
-  const handleSendWA = async (guest: any) => {
+  const handleSendWA = async (guest: InvitationLink) => {
     // Bersihkan nomor WA dan ubah angka 0 di depan menjadi 62
     let phone = guest.no_wa.replace(/\D/g, '');
     if (phone.startsWith('0')) phone = '62' + phone.substring(1);
@@ -147,7 +156,7 @@ export default function BroadcastPage() {
           </h2>
           <form onSubmit={handleAddGuest} className="flex flex-col md:flex-row gap-4">
             <input type="text" required placeholder="Nama Tamu (Cth: Bapak Budi Santoso)" value={newGuest.nama} onChange={(e) => setNewGuest({ ...newGuest, nama: e.target.value })} className="flex-1 p-4 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-stone-400" />
-            <input type="text" required placeholder="No. WhatsApp (Cth: 0812...)" value={newGuest.noWa} onChange={(e) => setNewGuest({ ...newWa: e.target.value })} className="flex-1 p-4 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-stone-400" />
+            <input type="text" required placeholder="No. WhatsApp (Cth: 0812...)" value={newGuest.noWa} onChange={(e) => setNewGuest({ ...newGuest, noWa: e.target.value })} className="flex-1 p-4 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-stone-400" />
             <button type="submit" disabled={isAdding} className="px-8 py-4 bg-stone-800 text-white rounded-xl text-xs font-bold uppercase tracking-widest disabled:opacity-50 hover:bg-stone-700 active:scale-95 transition-all whitespace-nowrap">
               {isAdding ? "Menyimpan..." : "Simpan"}
             </button>
