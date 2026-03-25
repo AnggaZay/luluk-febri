@@ -453,7 +453,8 @@ function WeddingPage() {
               </div>
 
               {/* 4. Guestbook Section */}
-              <GuestbookSection key={guestName} guestName={guestName} />
+              {/* ✨ Kunci aman: Jangan biarkan nilai key menjadi null */}
+              <GuestbookSection key={guestName || "guest"} guestName={guestName} />
               
               {/* FOOTER LOGO / OUTRO */}
               <div className="mt-8 mb-10 text-center opacity-40">

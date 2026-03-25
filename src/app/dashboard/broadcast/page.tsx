@@ -22,7 +22,6 @@ export default function BroadcastPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
 
   const [linksData, setLinksData] = useState<InvitationLink[]>([]);
   const [newGuest, setNewGuest] = useState({ nama: "", noWa: "" });
@@ -35,33 +34,15 @@ export default function BroadcastPage() {
   // ✨ Sesuaikan PIN Rahasia ini dengan yang ada di dashboard utama Anda
   const SECRET_PIN = "010426"; 
 
-  // ✨ CEK SESI LOGIN (Berlaku 2 Jam)
-  useEffect(() => {
-    const authExpiry = localStorage.getItem("wedding_auth_expiry");
-    if (authExpiry && parseInt(authExpiry) > Date.now()) {
-      setIsAuthenticated(true);
-    } else {
-      localStorage.removeItem("wedding_auth_expiry");
-    }
-    setIsChecking(false);
-  }, []);
-
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (pin === SECRET_PIN) {
       setIsAuthenticated(true);
       setError(false);
-      // ✨ Simpan waktu kedaluwarsa 2 jam
-      localStorage.setItem("wedding_auth_expiry", (Date.now() + 2 * 60 * 60 * 1000).toString());
     } else {
       setError(true);
       setPin("");
     }
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem("wedding_auth_expiry");
   };
 
   useEffect(() => {
@@ -160,9 +141,6 @@ export default function BroadcastPage() {
     }
   };
 
-  // ✨ Tahan render bentar biar form PIN nggak muncul sekejap
-  if (isChecking) return null;
-
   // TAMPILAN LOCK SCREEN
   if (!isAuthenticated) {
     return (
@@ -197,7 +175,7 @@ export default function BroadcastPage() {
             <Image src={WeddingData.coverPhoto} alt="Cover" fill className="object-cover opacity-80" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/40 to-transparent" />
           </div>
-          <button onClick={handleLogout} className="absolute top-4 right-4 z-20 px-5 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-white/30 active:scale-95 transition-all">
+          <button onClick={() => setIsAuthenticated(false)} className="absolute top-4 right-4 z-20 px-5 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-white/30 active:scale-95 transition-all">
             Kunci Halaman
           </button>
           <div className="relative z-10 mt-12 px-4">
