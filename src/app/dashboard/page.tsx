@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
+  const [isChecking, setIsChecking] = useState(true); // ✨ State biar layar nggak kedip pas ngecek sesi
 
   // ✨ AMBIL DATA DARI SUPABASE (Pindah ke atas agar sesuai Rules of Hooks React!)
   const [guestData, setGuestData] = useState<GuestData[]>([]);
@@ -62,6 +63,17 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated]);
 
+  // ✨ CEK SESI LOGIN (Berlaku 2 Jam)
+  useEffect(() => {
+    const authExpiry = localStorage.getItem("wedding_auth_expiry");
+    if (authExpiry && parseInt(authExpiry) > Date.now()) {
+      setIsAuthenticated(true);
+    } else {
+      localStorage.removeItem("wedding_auth_expiry");
+    }
+    setIsChecking(false);
+  }, []);
+
   // PIN rahasia (Bisa lo ganti nanti)
   const SECRET_PIN = "010426";
 
@@ -70,11 +82,21 @@ export default function DashboardPage() {
     if (pin === SECRET_PIN) {
       setIsAuthenticated(true);
       setError(false);
+      // ✨ Simpan waktu kedaluwarsa 2 jam (2 jam * 60 menit * 60 detik * 1000 ms)
+      localStorage.setItem("wedding_auth_expiry", (Date.now() + 2 * 60 * 60 * 1000).toString());
     } else {
       setError(true);
       setPin("");
     }
   };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("wedding_auth_expiry");
+  };
+
+  // ✨ Tahan render bentar biar form PIN nggak muncul sekejap kalau ternyata udah login
+  if (isChecking) return null;
 
   // ✨ TAMPILAN LOCK SCREEN (Minta PIN)
   if (!isAuthenticated) {
@@ -136,7 +158,7 @@ export default function DashboardPage() {
           
           {/* Tombol Keluar */}
           <button 
-            onClick={() => setIsAuthenticated(false)} 
+            onClick={handleLogout} 
             className="absolute top-4 right-4 z-20 px-5 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-white/30 active:scale-95 transition-all"
           >
             Tutup Brankas
