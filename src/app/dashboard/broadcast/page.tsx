@@ -175,9 +175,6 @@ export default function BroadcastPage() {
             <Image src={WeddingData.coverPhoto} alt="Cover" fill className="object-cover opacity-80" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/40 to-transparent" />
           </div>
-          <a href="/dashboard" className="absolute top-4 left-4 z-20 px-5 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-white/30 transition-all">
-            ← Kembali ke Buku Tamu
-          </a>
           <button onClick={() => setIsAuthenticated(false)} className="absolute top-4 right-4 z-20 px-5 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-white/30 active:scale-95 transition-all">
             Kunci Halaman
           </button>
@@ -189,6 +186,16 @@ export default function BroadcastPage() {
               <span className="text-xs md:text-sm font-serif text-stone-200 tracking-widest uppercase">{WeddingData.bride.shortName}</span>
             </div>
           </div>
+        </div>
+
+        {/* ✨ TAB MENU NAVIGASI */}
+        <div className="flex bg-white/50 backdrop-blur-sm p-1.5 rounded-2xl w-full max-w-md mx-auto shadow-sm border border-stone-100">
+          <a href="/dashboard" className="flex-1 text-center py-3 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all text-stone-500 hover:text-stone-800 hover:bg-white/80">
+            Buku Tamu
+          </a>
+          <a href="/dashboard/broadcast" className="flex-1 text-center py-3 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all bg-stone-900 text-white shadow-md pointer-events-none">
+            Sebar Undangan
+          </a>
         </div>
 
         {/* Form Tambah Tamu */}

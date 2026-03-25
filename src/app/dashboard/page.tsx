@@ -153,6 +153,16 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* ✨ TAB MENU NAVIGASI */}
+        <div className="flex bg-white/50 backdrop-blur-sm p-1.5 rounded-2xl w-full max-w-md mx-auto shadow-sm border border-stone-100">
+          <a href="/dashboard" className="flex-1 text-center py-3 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all bg-stone-900 text-white shadow-md pointer-events-none">
+            Buku Tamu
+          </a>
+          <a href="/dashboard/broadcast" className="flex-1 text-center py-3 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all text-stone-500 hover:text-stone-800 hover:bg-white/80">
+            Sebar Undangan
+          </a>
+        </div>
+
         {/* ✨ Statistik / Counter (Estetik Mode) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-stone-100 flex flex-col items-center justify-center text-center relative overflow-hidden">
