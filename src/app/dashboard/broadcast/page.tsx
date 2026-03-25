@@ -274,7 +274,12 @@ export default function BroadcastPage() {
             )}
           </div>
         </div>
-
+{/* ✨ TRADEMARK / DEVELOPER SPACE */}
+        <div className="pt-8 pb-4 text-center">
+          <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-medium text-stone-500">
+            Bagian Karya <span className="font-bold tracking-[0.3em] text-[#20636e]">Helvetecha</span>
+          </p>
+        </div>
       </div>
     </div>
   );
